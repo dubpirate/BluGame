@@ -6,4 +6,4 @@ A game made for Victoria University's BluJam competition.
 LWJGL: https://www.lwjgl.org/customize
 Slick-Util: http://slick.ninjacave.com/slick-util/
 
-LWJGL Tutorial: https://youtu.be/0v56I5UWrYY
+LWJGL Install Tutorial: https://github.com/LWJGL/lwjgl3-wiki/wiki/1.2.-Install

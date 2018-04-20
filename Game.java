@@ -14,12 +14,13 @@ import org.lwjgl.opengl.GL11;
 
 public class Game{
 	
-	private static final int TILESIZE = 48;
-	private static final int WIDTH  = TILESIZE * 25;  // 1248
-	private static final int HEIGHT = TILESIZE * 20; //  960
+	private static final int TILESIZEHEIGHT = 32;
+	private static final int TILESIZEWIDTH = 24;
+	private static final int WIDTH  = TILESIZEWIDTH * 60;   // 1440
+	private static final int HEIGHT = TILESIZEHEIGHT * 30; //  960
 	private static ArrayList<Layer> layers = new ArrayList<Layer>();
 	private static Layer currentLayer;
-	private final String[] textures = {"res/Ground1.png", "res/Ground2.png", "res/Ground3.png", "res/Ground4.png", "res/Ground5.png"};
+	private final String[] textures = {"res/Layer1/"};
 	
 	public static void main(String[] args) throws Exception {
 
@@ -40,7 +41,7 @@ public class Game{
 	public void update() {
 		clearGL();
 		
-		inputs(new Input(HEIGHT));
+		//inputs(new Input(HEIGHT));
 		
 		currentLayer.draw();
 		

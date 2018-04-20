@@ -14,12 +14,13 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
 public class Game {
-	static int width = 750;
-	static int height = 750;
+	private static final int TILESIZE = 48;
+	private static final int WIDTH  = TILESIZE * 30;   // 1440
+	private static final int HEIGHT = TILESIZE * 20; //  960
 
 	public static void main(String[] args) throws Exception {
 
-		Display.setDisplayMode(new DisplayMode(width, height));
+		Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 		Display.create();
 		Game game = new Game();
 		while (!Display.isCloseRequested()) {

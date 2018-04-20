@@ -14,10 +14,10 @@ import org.lwjgl.opengl.GL11;
 
 public class Game{
 	
-	private static final int TILESIZEHEIGHT = 32;
-	private static final int TILESIZEWIDTH = 24;
-	private static final int WIDTH  = TILESIZEWIDTH * 60;   // 1440
-	private static final int HEIGHT = TILESIZEHEIGHT * 30; //  960
+	private static final int TILESIZEHEIGHT = 48;
+	private static final int TILESIZEWIDTH = 36;
+	private static final int WIDTH  = 1440;   // 1440
+	private static final int HEIGHT = 960; //  960
 	private static ArrayList<Layer> layers = new ArrayList<Layer>();
 	private static Layer currentLayer;
 	private final String[] textures = {"res/Layer1/"};
@@ -33,7 +33,7 @@ public class Game{
 		game.close();
 	}
 
-	public Game() {
+	public Game() throws IOException {
 		intiGL();
 		generateLayers();
 	}
@@ -48,7 +48,7 @@ public class Game{
 		Display.update();
 	}
 	
-	private void generateLayers() {
+	private void generateLayers() throws IOException {
 		for (int i = 0; i < textures.length; i ++) {	
 			layers.add(new Layer(i, textures[i], null, WIDTH, HEIGHT));
 		}

@@ -46,8 +46,10 @@ public class Game {
 		boxTexture.bind();
 
 		GL11.glColor3f(1, 1, 1);
-		for (int i = 0; i < height; i += 16) {
-			for (int j = 0; j < width; j += 16) {
+
+
+		for (int i = 0; i < HEIGHT; i += 16) {
+			for (int j = 0; j < WIDTH; j += 12) {
 				GL11.glBegin(GL11.GL_QUADS);
 
 				GL11.glVertex2f(j, i);
@@ -56,15 +58,16 @@ public class Game {
 				GL11.glVertex2f(j,i+16);
 				GL11.glTexCoord2f(1, 0);
 
-				GL11.glVertex2f(j+16,i+16);
+				GL11.glVertex2f(j+12,i+16);
 				GL11.glTexCoord2f(1, 1);
 
-				GL11.glVertex2f(j+16, i);
+				GL11.glVertex2f(j+12, i);
 				GL11.glTexCoord2f(0, 1);
 
 				GL11.glEnd();
 			}
 		}
+
 		Display.update();
 	}
 

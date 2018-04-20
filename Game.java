@@ -3,7 +3,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -13,85 +12,78 @@ import org.newdawn.slick.util.ResourceLoader;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.input.*;
 
+public class Game {
+	static int width = 750;
+	static int height = 750;
 
-public class Game{
-	
-	private static final int TILESIZE = 48;
-	private static final int WIDTH  = TILESIZE * 30;   // 1440
-	private static final int HEIGHT = TILESIZE * 20; //  960
-	
-	public static void main(String[] args) throws Exception{
-		Display.setDisplayMode(new DisplayMode(1000,750));
+	public static void main(String[] args) throws Exception {
+
+		Display.setDisplayMode(new DisplayMode(width, height));
 		Display.create();
 		Game game = new Game();
-		while(!Display.isCloseRequested()) {
+		while (!Display.isCloseRequested()) {
 			game.update();
 		}
 		game.close();
 	}
-	
+
 	public Game() {
 		intiGL();
 		try {
-			boxTexture = TextureLoader.getTexture("JPG", ResourceLoader.getResourceAsStream("res/man1.png"));
-		}catch(IOException e){
+			boxTexture = TextureLoader.getTexture("JPG", ResourceLoader.getResourceAsStream("res/Ground.jpg"));
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	Texture boxTexture;
-	
+
 	public void update() {
 		clearGL();
-		
-		Input input = new Input(HEIGHT);
-		
-		if (input.isKeyDown(Input.KEY_ESCAPE)) {
-			close();
-		}
-		
+
 		boxTexture.bind();
-		
-		
-		GL11.glColor3f(1,1,1);
-		GL11.glBegin(GL11.GL_QUADS);
-		
-		GL11.glVertex2f(100,100);
-		GL11.glTexCoord2f(0,0);
-		
-		GL11.glVertex2f(100,140);
-		GL11.glTexCoord2f(1,0);
-		
-		GL11.glVertex2f(140,140);
-		GL11.glTexCoord2f(1,1);
-		
-		GL11.glVertex2f(140,100);
-		GL11.glTexCoord2f(0,1);
-		
-		GL11.glEnd();
-		
+
+		GL11.glColor3f(1, 1, 1);
+		for (int i = 0; i < height; i += 16) {
+			for (int j = 0; j < width; j += 16) {
+				GL11.glBegin(GL11.GL_QUADS);
+
+				GL11.glVertex2f(j, i);
+				GL11.glTexCoord2f(0, 0);
+
+				GL11.glVertex2f(j,i+16);
+				GL11.glTexCoord2f(1, 0);
+
+				GL11.glVertex2f(j+16,i+16);
+				GL11.glTexCoord2f(1, 1);
+
+				GL11.glVertex2f(j+16, i);
+				GL11.glTexCoord2f(0, 1);
+
+				GL11.glEnd();
+			}
+		}
 		Display.update();
 	}
-	
+
 	public void close() {
 		Display.destroy();
-		System.exit(1);
+		System.exit(0);
 	}
-	
+
 	public void intiGL() {
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GL11.glOrtho(0,512,0,512,1,-1);
+		GL11.glOrtho(0, 512, 0, 512, 1, -1);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		
+
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
-	
+
 	public void clearGL() {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		GL11.glLoadIdentity();
 	}
-	
+
 }

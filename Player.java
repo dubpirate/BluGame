@@ -16,20 +16,26 @@ public class Player {
 	private int tileWidth;
 	private int tileHeight;
 	private Image img;
+	private Layer currentLayer;
 	
-	public Player(int tileHeight, int tileWidth, int width, int height) throws SlickException {
+	
+	public Player(int tileHeight, int tileWidth, int width, int height, Layer currentLayer) throws SlickException {
 		this.width = width;
 		this.height = height;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
 		Random rand = new Random();
-		int  n = rand.nextInt(10) + 1;
+		int  n = rand.nextInt(9) + 1;
 		x = n;
 		n = rand.nextInt(10) + 1;
 		y = n;
 		img = new Image("res/Sprites/Man2Front.png");
+		this.currentLayer = currentLayer;
 	}
 	
+	public void setCurrentLayer(Layer layer) {
+		currentLayer = layer;
+	}
 	
 	public void draw() {
 		img.bind();
@@ -74,10 +80,16 @@ public class Player {
 					if (x > 1) {
 						x--;
 					}
-
 					img = new Image("res/Sprites/Man2Left.png");
 				}
 			}
 		}
+	}
+	
+	public int getX() {
+		return x;
+	}
+	public int getY(){
+		return y;
 	}
 }

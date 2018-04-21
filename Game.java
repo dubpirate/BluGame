@@ -43,6 +43,8 @@ public class Game{
 		//inputs(new Input(HEIGHT));
 		
 		currentLayer.draw();
+		player.move();
+		player.draw();
 		
 		Display.update();
 	}

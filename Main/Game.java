@@ -11,6 +11,8 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.Texture;
 
+import Aesthetic.Rock;
+
 public class Game {
 
 	private static final int TILESIZEHEIGHT = 48;
@@ -45,7 +47,10 @@ public class Game {
 		int levels = 20;
 		
 		generateLayers(levels);
-		player = new Player(TILESIZEHEIGHT, TILESIZEWIDTH, currentLayer, new ArrayList<Enemy>());
+		do {
+			player = new Player(TILESIZEHEIGHT, TILESIZEWIDTH, currentLayer, new ArrayList<Enemy>());
+		} while(currentLayer.checkPlayerCollision(player.getX(), player.getY()));
+		
 		eg = new EnemyGenerator(levels, player, TILESIZEWIDTH, TILESIZEHEIGHT, layers);
 		sm = new SideMenu(3, HEIGHT);
 	}
@@ -122,7 +127,7 @@ public class Game {
 			}
 		} else if (player.getDead()) {
 			if(timerSet) {
-				timer2=500;
+				timer2=2000;
 				timerSet = false;
 			}
 			lose();

@@ -1,4 +1,5 @@
 package Main;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,52 +20,79 @@ import org.lwjgl.opengl.GL11;
 public class SideMenu {
 	private static final int TILESIZEHEIGHT = 48;
 	private static final int TILESIZEWIDTH = 36;
-	
-	private int height; 
+
+	private int height;
 	private int width;
-	
+
 	int health;
 	Texture heart;
 	Texture heartEmpty;
-	
+	Texture bg;
+
 	SideMenu(int health, int width, int height) {
 		this.health = health;
 		this.height = height;
 		this.width = width;
 		try {
+			bg = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/SideMenu/Side.png"));
 			heart = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/SideMenu/Heart.png"));
-			heartEmpty = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/SideMenu/EmptyHeart.png"));
+			heartEmpty = TextureLoader.getTexture("PNG",
+					ResourceLoader.getResourceAsStream("res/SideMenu/EmptyHeart.png"));
 		} catch (IOException e) {
 			System.out.println("Could not find Stairs textures!");
 			e.printStackTrace();
 		}
 	}
-	
-	
-	public void draw(){
-		GL11.glColor3f(1, 1, 1);
-		heart.bind();
 
+	public void draw() {
+		GL11.glColor3f(1, 1, 1);
 		
-		for(int i = 0;i<3;i++) {
+		bg.bind();
+		
+		for (int i = 0; i < height; i += TILESIZEHEIGHT) {
+			for (int j = height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3; j < width; j += TILESIZEWIDTH) {
+				GL11.glBegin(GL11.GL_QUADS);
+
+				GL11.glVertex2f(j,i);
+				GL11.glTexCoord2f(0, 0);
+
+				GL11.glVertex2f(j,i+TILESIZEHEIGHT);
+				GL11.glTexCoord2f(1, 0);
+
+				GL11.glVertex2f(j+TILESIZEWIDTH,i+TILESIZEHEIGHT);
+				GL11.glTexCoord2f(1, 1);
+
+				GL11.glVertex2f(j+TILESIZEWIDTH,i);
+				GL11.glTexCoord2f(0, 1);
+
+				GL11.glEnd();
+			}
+		}
+
+
+		heart.bind();
+		
+		for (int i = 0; i < 3; i++) {
 			GL11.glBegin(GL11.GL_QUADS);
 
-			GL11.glVertex2f((height/2-TILESIZEWIDTH*2-TILESIZEWIDTH/3)+TILESIZEWIDTH*i, height/2-TILESIZEHEIGHT);
+			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i,
+					height / 2 - TILESIZEHEIGHT);
 			GL11.glTexCoord2f(0, 0);
 
-			GL11.glVertex2f((height/2-TILESIZEWIDTH*2-TILESIZEWIDTH/3)+TILESIZEWIDTH*i, height/2-TILESIZEHEIGHT + TILESIZEHEIGHT);
+			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i,
+					height / 2 - TILESIZEHEIGHT + TILESIZEHEIGHT);
 			GL11.glTexCoord2f(1, 0);
 
-			GL11.glVertex2f((height/2-TILESIZEWIDTH*2-TILESIZEWIDTH/3)+TILESIZEWIDTH*i + TILESIZEWIDTH, height/2-TILESIZEHEIGHT + TILESIZEHEIGHT);
+			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i + TILESIZEWIDTH,
+					height / 2 - TILESIZEHEIGHT + TILESIZEHEIGHT);
 			GL11.glTexCoord2f(1, 1);
 
-			GL11.glVertex2f((height/2-TILESIZEWIDTH*2-TILESIZEWIDTH/3)+TILESIZEWIDTH*i + TILESIZEWIDTH, height/2-TILESIZEHEIGHT);
+			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i + TILESIZEWIDTH,
+					height / 2 - TILESIZEHEIGHT);
 			GL11.glTexCoord2f(0, 1);
 
 			GL11.glEnd();
 		}
-		
-		
-		
+
 	}
 }

@@ -48,17 +48,22 @@ public class Enemy {
 						flag = false;
 					}
 				}
-				if (currentLayer.getLevel()>1) {
-					int[] stairsDownCoords = currentLayer.getStairsDown().getCoords();
-					if (stairsDownCoords[0]/tileWidth==x && stairsDownCoords[1]/tileHeight==y) {
-						flag = false;
-					}
+			}
+			if (currentLayer.getLevel() > 1) {
+				int[] stairsDownCoords = currentLayer.getStairsDown().getCoords();
+				if (stairsDownCoords[0] / tileWidth == x && stairsDownCoords[1] / tileHeight == y) {
+					flag = false;
 				}
-				if (currentLayer.getLevel()<20) {
-					int[] stairsUpCoords = currentLayer.getStairsUp().getCoords();
-					if (stairsUpCoords[0]/tileWidth==x && stairsUpCoords[1]/tileHeight==y) {
-						flag = false;
-					}
+			}
+			if (currentLayer.getLevel() < 20) {
+				int[] stairsUpCoords = currentLayer.getStairsUp().getCoords();
+				if (stairsUpCoords[0] / tileWidth == x && stairsUpCoords[1] / tileHeight == y) {
+					flag = false;
+				}
+			}
+			for (Enemy e: player.getEnemyList()) {
+				if (e.getX()==x && e.getY()==y && e.getLayer().getLevel()==currentLayer.getLevel()) {
+					flag = false;
 				}
 			}
 		}

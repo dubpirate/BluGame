@@ -3,7 +3,6 @@ package Main;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import java.util.Random;
 
@@ -66,7 +65,8 @@ public class Player {
 					}
 					img = new Image("res/Sprites/Man2Right.png");
 		        } else if (Keyboard.getEventKey() == Keyboard.KEY_S) {
-		        	if (y>1) {					    y--;
+		        	if (y>1) {
+					    y--;
 					}
 					img = new Image("res/Sprites/Man2Front.png");
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_A) {

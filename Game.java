@@ -3,12 +3,8 @@ package Main;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
+import Items.*;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
-import org.newdawn.slick.util.ResourceLoader;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
@@ -23,7 +19,6 @@ public class Game{
 	private static ArrayList<Layer> layers = new ArrayList<Layer>();
 	private static Layer currentLayer;
 	private Player player; 
-	private SideMenu sm;
 	
 	public static void main(String[] args) throws SlickException, Exception {
 
@@ -40,50 +35,40 @@ public class Game{
 		intiGL();
 		generateLayers();
 		player = new Player(TILESIZEHEIGHT,TILESIZEWIDTH,WIDTH,HEIGHT);
-		sm = new SideMenu(3,WIDTH,HEIGHT);
 	}
 	
 	public void update() throws SlickException {
 		clearGL();
 		
-		//inputs(new Input(HEIGHT));
-		
 		currentLayer.draw();
 		player.move();
 		player.draw();
-		sm.draw();
 		
 		Display.update();
 	}
 	
 	private void generateLayers() throws IOException {
 		Layer prev = null;
+		Layer next = null;
+		ArrayList<Item> contents;
 		for (int i = 1; i <= 5; i ++) {	
-			layers.add(new Layer(prev, i, "res/Layer"+i+"/", null, WIDTH, HEIGHT));
+			contents =  new ArrayList<Item>();
+			next = new Layer(prev, i, "res/Layer"+i+"/", contents, WIDTH, HEIGHT);
+			layers.add(next);
 			prev = layers.get(i-1);
 		}
 		currentLayer = layers.get(0);
 	}
 	
-	private void inputs(Input input) {
-		if (input.isKeyDown(Input.KEY_ESCAPE)) {
-			close();
-		} else if (input.isKeyDown(Input.KEY_X)) {
-			if (currentLayer.getLevel() != 4) {
-				currentLayer = layers.get(currentLayer.getLevel()+1);
-			}
-		} else if (input.isKeyDown(Input.KEY_Z)) {
-			if (currentLayer.getLevel() != 0) {
-				currentLayer = layers.get(currentLayer.getLevel()-1);
-			}
-		}
+	private void generateContents() {
+		ContentsGenerator contentsGenerator = new ContentsGenerator();
 	}
 	
 	private void close() {
 		Display.destroy();
 		System.exit(0);
 	}
-
+	
 	private void intiGL() {
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();

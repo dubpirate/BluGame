@@ -5,6 +5,8 @@ import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import java.util.Random;
+
 
 public class Player {
 	private int x;
@@ -15,14 +17,17 @@ public class Player {
 	private int tileHeight;
 	private Image img;
 	
-	public Player(int tileHeight, int tileWidth, int height, int width) throws SlickException {
+	public Player(int tileHeight, int tileWidth, int width, int height) throws SlickException {
 		this.width = width;
 		this.height = height;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
-		x = 3;
-		y = 2;
-		img = new Image("res/Sprites/Man1Front.png");
+		Random rand = new Random();
+		int  n = rand.nextInt(10) + 1;
+		x = n;
+		n = rand.nextInt(10) + 1;
+		y = n;
+		img = new Image("res/Sprites/Man2Front.png");
 	}
 	
 	
@@ -54,23 +59,23 @@ public class Player {
 					if (y < 10) {
 						y++;
 					}
-					img = new Image("res/Sprites/Man1Back.png");      
+					img = new Image("res/Sprites/Man2Back.png");      
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_D) {
-					if (x < 10) {
+					if (x < 9) {
 						x++;
 					}
-					img = new Image("res/Sprites/Man1Side.png");
+					img = new Image("res/Sprites/Man2Right.png");
 		        } else if (Keyboard.getEventKey() == Keyboard.KEY_S) {
 		        	if (y>1) {
 					    y--;
 					}
-					img = new Image("res/Sprites/Man1Front.png");
+					img = new Image("res/Sprites/Man2Front.png");
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_A) {
 					if (x > 1) {
 						x--;
 					}
 
-					img = new Image("res/Sprites/Man1Side.png");
+					img = new Image("res/Sprites/Man2Left.png");
 				}
 			}
 		}

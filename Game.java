@@ -20,8 +20,9 @@ public class Game{
 	private static final int HEIGHT = 960; //  960
 	private static ArrayList<Layer> layers = new ArrayList<Layer>();
 	private static Layer currentLayer;
+	private Player player; 
 	
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws SlickException, Exception {
 
 		Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 		Display.create();
@@ -35,6 +36,7 @@ public class Game{
 	public Game() throws IOException {
 		intiGL();
 		generateLayers();
+		player = new Player(TILESIZEHEIGHT,TILESIZEWIDTH,WIDTH,HEIGHT);
 	}
 	
 	public void update() {

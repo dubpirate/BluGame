@@ -8,7 +8,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
-import Aesthetics.*;
+import Aesthetic.*;
 
 import org.lwjgl.opengl.GL11;
 import Items.*;
@@ -36,7 +36,6 @@ public class Layer {
 		this.width = width;
 		this.drawSize = height/2-menuWidth;
 		
-		System.out.println("Donwstairs");
 		if (prev != null) {
 			try {
 			stairsDown = new Stairs(prev.getStairsUp().getCoords(), "down", TILESIZEWIDTH, TILESIZEHEIGHT);
@@ -45,20 +44,13 @@ public class Layer {
 				e.printStackTrace();
 			}
 		}
-		
-		System.out.println("making torch");
-		Item n = new Torch("left");
-		rawContents.add(n);
-		
-		System.out.println("initting contents");
+
 		initContents(rawContents);
 		
-		System.out.println("making upstairs");
 		if (level != 5) {
 			stairsUp = newStairsUp();
 		}
-		
-		System.out.println("loading textures");
+
 		for (int i = 0; i < textures.length; i++) {
 			String tileName = textures[i];
 			tile = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream(tileFile + tileName + ".png"));
@@ -111,7 +103,6 @@ public class Layer {
 				do {
 					i.setCoords(i.genNewCoords());
 				} while(checkItemCollisions(i));
-				System.out.println("Dong");
 				this.contents.add(i);
 			}
 		}

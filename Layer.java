@@ -6,14 +6,14 @@ import java.util.Map;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 import Items.*;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
+
+import Aesthetic.*;
+import Interactable.Chest;
+
 import org.lwjgl.opengl.GL11;
 
 public class Layer {
@@ -33,16 +33,20 @@ public class Layer {
 	private Stairs stairsDown; //
 	private String tileFile;
 	private int lay;
+	private int[] playerPos;
+	private Player player;
+	private ArrayList<Item> rawItem = new ArrayList<Item>();
 	Map<String, Texture> bgTextures = new HashMap<String, Texture>();
 	private final String[] textures = { "botRight", "botWall", "Ground", "leftWall", "rightWall", "topLeft", "topRight",
 			"topWall", "botLeft" };
 
-	Layer(Layer prev, int level, String tileFile, ArrayList<Item> rawItems, int width, int height, int lay)
+	Layer(Layer prev, int level, String tileFile, ArrayList<Item> rawItems, int width, int height, int lay, Player player)
 			throws IOException {
 		this.level = level;
 		this.lay = lay;
-		this.items = items;
+		this.rawItem = rawItems;
 		this.height = height;
+		this.player=player;
 		this.width = width;
 		this.drawSize = height / 2 - menuWidth;
 		this.tileFile = tileFile;
@@ -58,7 +62,7 @@ public class Layer {
 		}
 
 		initContents(rawItems);
-
+		
 		stairsUp = newStairsUp();
 
 		for (int i = 0; i < textures.length; i++) {
@@ -79,13 +83,23 @@ public class Layer {
 			}
 		}
 	}
+	
+	boolean checkPlayerCollision(int x,int y) {
+		int[] playerPos = {x,y};
+		for (Item i : items) {
+			if (i.collidesWith(playerPos)&& ((i instanceof Rock) || (i instanceof Chest)))
+				return true;
+		}
+		return false;
+	}
 
 	private boolean checkItemCollisions(Item item) {
 		if (stairsDown != null && item.collidesWith(stairsDown.getCoords())) {
 			return true;
 		}
 		for (Item i : items) {
-			if (i.collidesWith(item.getCoords())) return true;
+			if (i.collidesWith(item.getCoords()) )
+				return true;
 		}
 		return false;
 	}
@@ -117,22 +131,20 @@ public class Layer {
 			newStairs[0] = ThreadLocalRandom.current().nextInt(1, 10) * TILESIZEWIDTH;
 			newStairs[1] = ThreadLocalRandom.current().nextInt(1, 10) * TILESIZEHEIGHT;
 
-			if (stairsDown != null && stairsDown.getCoords()[0] != newStairs[0]
-					&& stairsDown.getCoords()[1] != newStairs[1]) {
+			if (stairsDown != null && stairsDown.getCoords()[0] == newStairs[0]
+					&& stairsDown.getCoords()[1] == newStairs[1]) {
 				collision = true;
 			} else {
-				// for (item in items)
-				// if collisions with x, y
-				// collision = true;
-				// break;
-				//
-				//
+				for (Item i : this.items)
+					if (i.collidesWith(newStairs) && !(i instanceof Crack) && !(i instanceof Moss)) {
+						collision = true;
+						break;
+					}
+
 			}
 		} while (collision);
 		return new Stairs(newStairs, tileFile + lay + "/Stairsup", TILESIZEWIDTH, TILESIZEHEIGHT);
 	}
-	
-	
 
 	public void draw() throws SlickException {
 		drawLayer(); // first draw the floor and walls
@@ -320,16 +332,20 @@ public class Layer {
 			stairsDown.draw();
 		}
 
-		// this draws the stairs down, if there are any.
-		if (stairsUp != null) {
+		// this draws the stairs up, if there are any.
+		if (level != 24) {
 			stairsUp.draw();
 		}
 
 	}
 
 	private void drawItems() {
-		for(Item i:this.items) {
+		for (Item i : this.items) {
 			i.draw();
 		}
+	}
+
+	public ArrayList<Item> getContents() {
+		return items;
 	}
 }

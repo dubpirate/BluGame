@@ -2,10 +2,10 @@ package Interactable;
 
 import Items.*;
 
-public class Chest extends Aesthetic {
+public class Coin extends Aesthetic {
 	private int code;
-	public Chest(int code) {
-		super("res/Interactables/Chest.png", null);	
+	public Coin(int code) {
+		super("res/Interactables/Gold.png", null);	
 		this.code = code;
 	}
 	

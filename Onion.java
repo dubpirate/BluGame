@@ -1,10 +1,9 @@
-package Items;
+package Interactable;
 
-import org.newdawn.slick.tests.xml.Item;
+import Items.*;
 
-public class Onion extends Item{
+public class Onion extends Aesthetic {
 	public Onion(){
-		
+		super("res/Interactables/Onion.png", null);
 	}
-	
 }

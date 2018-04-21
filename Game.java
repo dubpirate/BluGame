@@ -2,13 +2,10 @@ package Main;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
-import org.newdawn.slick.util.ResourceLoader;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -29,6 +26,7 @@ public class Game {
 	private int timer = 0;
 	private int layerNum = 1;
 	private boolean isLoading = true;
+	private EnemyGenerator eg;
 	Texture t;
 
 	public static void main(String[] args) throws SlickException, Exception {
@@ -46,8 +44,10 @@ public class Game {
 	public Game() throws IOException, SlickException {
 		intiGL();
 		int levels = 25;
+		
 		generateLayers(levels);
-		player = new Player(TILESIZEHEIGHT, TILESIZEWIDTH, WIDTH, HEIGHT, currentLayer);
+		player = new Player(TILESIZEHEIGHT,TILESIZEWIDTH,WIDTH,HEIGHT, currentLayer);
+		eg=new EnemyGenerator(levels, player, TILESIZEWIDTH, TILESIZEHEIGHT, layers);
 		sm = new SideMenu(3, WIDTH, HEIGHT);
 	}
 
@@ -60,13 +60,18 @@ public class Game {
 			timer--;
 		}
 		currentLayer.draw();
-		player.move();
+		if(player.move()) {
+			for(int i = 0;i < eg.getEnemies().size();i++) {
+				eg.getEnemies().get(i).move();
+			}
+		}
+
 		int[] stairsUp = currentLayer.getStairsUp().getCoords();
 		if (stairsUp[0] / TILESIZEWIDTH == player.getX() && stairsUp[1] / TILESIZEHEIGHT == player.getY()) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
 				if (timer == 0) {
 					currentLayer = layers.get(currentLayer.getLevel());
-					player.setCurrentLayer(layers.get(currentLayer.getLevel()));
+					player.setCurrentLayer(layers.get(currentLayer.getLevel()-1));
 					timer = 100;
 				}
 			}
@@ -86,7 +91,9 @@ public class Game {
 		}
 
 		currentLayer.draw();
-		player.move();
+		for(int i = 0;i<eg.getEnemies().size();i++) {
+			eg.getEnemies().get(i).draw();
+		}
 		player.draw();
 		sm.draw();
 
@@ -98,19 +105,19 @@ public class Game {
 	private void generateLayers(int levels) throws IOException, SlickException {
 		ContentsGenerator gs = new ContentsGenerator(levels);
 		Layer prev = null;
-		ArrayList<Item> contents;
+		ArrayList<Item> contents = new ArrayList<Item>();
 		for (int i = 1; i <= levels; i++) {
 			if (i % 5 == 0 && i < 21) {
 				layerNum++;
 			}
 			
 			
-			layers.add(new Layer(prev, i, "res/Layer", gs.getNextContents(), WIDTH, HEIGHT, layerNum));
+			layers.add(new Layer(prev, i, "res/Layer", gs.getNextContents(), WIDTH, HEIGHT, layerNum,player));
 
 			prev = layers.get(i - 1);
 		}
 		currentLayer = layers.get(0);
-		isLoading = false;
+		
 	}
 	
 	private void close() {

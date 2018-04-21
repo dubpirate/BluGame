@@ -1,10 +1,10 @@
 package Aesthetic;
 
-import Items.Aesthetic;
+import Items.*;
+import Main.*;
 
 public class Rock extends Aesthetic {
-
-	public Rock() {
+	public Rock(){
 		super("res/Aesthetic/Rock.png", null);
 	}
 }

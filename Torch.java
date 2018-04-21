@@ -15,12 +15,12 @@ public class Torch extends Aesthetic {
 	public int[] genNewCoords(){
 		int[] c = new int[2];
 				
-		if (type.equals("right"))
+		if (type.equals("left"))
         {
         	c[0] = 0;
         	c[1] = ThreadLocalRandom.current().nextInt(1, 10)*48;
         } else {
-        	c[0] = 10*38;
+        	c[0] = 9*38+18;
         	c[1] = ThreadLocalRandom.current().nextInt(1, 10)*48;
         }
 		

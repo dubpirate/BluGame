@@ -20,7 +20,6 @@ public class Game{
 	private static final int HEIGHT = 960; //  960
 	private static ArrayList<Layer> layers = new ArrayList<Layer>();
 	private static Layer currentLayer;
-	private final String[] textures = {"res/Layer1/"};
 	
 	public static void main(String[] args) throws Exception {
 
@@ -49,8 +48,10 @@ public class Game{
 	}
 	
 	private void generateLayers() throws IOException {
-		for (int i = 0; i < textures.length; i ++) {	
-			layers.add(new Layer(i, textures[i], null, WIDTH, HEIGHT));
+		Layer prev = null;
+		for (int i = 1; i <= 5; i ++) {	
+			layers.add(new Layer(prev, i, "res/Layer"+i+"/", null, WIDTH, HEIGHT));
+			prev = layers.get(i-1);
 		}
 		currentLayer = layers.get(0);
 	}

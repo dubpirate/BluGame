@@ -1,4 +1,4 @@
-package main;
+package Main;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;

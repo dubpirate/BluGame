@@ -23,6 +23,7 @@ public class Game{
 	private static ArrayList<Layer> layers = new ArrayList<Layer>();
 	private static Layer currentLayer;
 	private Player player; 
+	private SideMenu sm;
 	
 	public static void main(String[] args) throws SlickException, Exception {
 
@@ -39,6 +40,7 @@ public class Game{
 		intiGL();
 		generateLayers();
 		player = new Player(TILESIZEHEIGHT,TILESIZEWIDTH,WIDTH,HEIGHT);
+		sm = new SideMenu(3,WIDTH,HEIGHT);
 	}
 	
 	public void update() throws SlickException {
@@ -49,6 +51,7 @@ public class Game{
 		currentLayer.draw();
 		player.move();
 		player.draw();
+		sm.draw();
 		
 		Display.update();
 	}

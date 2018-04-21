@@ -21,7 +21,7 @@ public class Stairs {
 	int TILESIZEHEIGHT;
 	int TILESIZEWIDTH;
 	String type; // layertype + either "Up" or "Down"
-	Texture stair;
+	Texture stairs;
 	
 	Stairs(int[] coords, String type, int tsw, int tsh) {
 		this.coords = coords;
@@ -29,7 +29,7 @@ public class Stairs {
 		this.TILESIZEHEIGHT = tsh;
 		this.TILESIZEWIDTH = tsw;
 		try {
-			stair = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream(type + ".png"));
+			stairs = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream(type+".png"));
 		} catch (IOException e) {
 			System.out.println("Could not find Stairs textures!");
 			e.printStackTrace();
@@ -41,40 +41,27 @@ public class Stairs {
 	}
 	
 	public void draw(){
-		stair.bind();
+		stairs.bind();
+		
+		GL11.glEnable(GL11.GL_BLEND); 
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		
 		GL11.glBegin(GL11.GL_QUADS);
 
-		GL11.glVertex2f(coords[0] - TILESIZEWIDTH/2, coords[1]);
+		GL11.glVertex2f(coords[0], coords[1]);
 		GL11.glTexCoord2f(0, 0);
 
-		GL11.glVertex2f(coords[0] - TILESIZEWIDTH/2, coords[1] + TILESIZEHEIGHT);
+		GL11.glVertex2f(coords[0] , coords[1] + TILESIZEHEIGHT);
 		GL11.glTexCoord2f(1, 0);
 
-		GL11.glVertex2f(coords[0] - TILESIZEWIDTH/2 + TILESIZEWIDTH, coords[1] + TILESIZEHEIGHT);
+		GL11.glVertex2f(coords[0]  + TILESIZEWIDTH, coords[1] + TILESIZEHEIGHT);
 		GL11.glTexCoord2f(1, 1);
 
-		GL11.glVertex2f(coords[0] - TILESIZEWIDTH/2 + TILESIZEWIDTH, coords[1]);
+		GL11.glVertex2f(coords[0]  + TILESIZEWIDTH, coords[1]);
 		GL11.glTexCoord2f(0, 1);
 
 		GL11.glEnd();
 		
-		/*right.bind();
 		
-		GL11.glBegin(GL11.GL_QUADS);
-
-		GL11.glVertex2f(coords[0] + TILESIZEWIDTH - 1 - TILESIZEWIDTH/2, coords[1]);
-		GL11.glTexCoord2f(0, 0);
-
-		GL11.glVertex2f(coords[0]+TILESIZEWIDTH-1-TILESIZEWIDTH/2, coords[1] + TILESIZEHEIGHT);
-		GL11.glTexCoord2f(1, 0);
-
-		GL11.glVertex2f(coords[0] + TILESIZEWIDTH+TILESIZEWIDTH-1-TILESIZEWIDTH/2, coords[1] + TILESIZEHEIGHT);
-		GL11.glTexCoord2f(1, 1);
-
-		GL11.glVertex2f(coords[0] + TILESIZEWIDTH+TILESIZEWIDTH-1-TILESIZEWIDTH/2, coords[1]);
-		GL11.glTexCoord2f(0, 1);
-
-		GL11.glEnd();
-		*/
 	}
 }

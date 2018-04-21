@@ -25,12 +25,13 @@ public class Layer {
 	private int height; // screen height
 	private int width; //  screen width
 	private int menuWidth = 100;
+	private Texture bg;
 	private int level; // which layer in the stack is this
 	private ArrayList<? extends Item> items; // all the items in this layer
 	private Stairs stairsUp;    // Stairs objects
 	private Stairs stairsDown; //
 	Map<String, Texture> bgTextures = new HashMap<String, Texture>();
-	private final String[] textures = { "botRight", "botWall", "Ground", "leftWall", "rightWall", "topLeft", "topRight",
+	private final String[] textures = { "botRight", "botWall", "Ground2", "leftWall", "rightWall", "topLeft", "topRight",
 			"topWall", "botLeft"};
 
 	Layer(Layer prev, int level, String tileFile, ArrayList<? extends Item> items, int width, int height) throws IOException {
@@ -42,7 +43,7 @@ public class Layer {
 		
 		if (prev != null) {
 			try {
-			stairsDown = new Stairs(prev.getStairsUp().getCoords(), "res/Layer" + level + "/Stairsup", TILESIZEWIDTH, TILESIZEHEIGHT);
+			stairsDown = new Stairs(prev.getStairsUp().getCoords(), "res/Layer" + level + "/Stairsdown", TILESIZEWIDTH, TILESIZEHEIGHT);
 			} catch (java.lang.NullPointerException e) {
 				System.out.println("Error loading stairs on Layer" + level);
 				e.printStackTrace();
@@ -52,7 +53,7 @@ public class Layer {
 		if (level != 5) {
 			stairsUp = newStairsUp();
 		}
-
+		bg = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/sideMenuBG.png"));
 		for (int i = 0; i < textures.length; i++) {
 			String tileName = textures[i];
 			tile = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream(tileFile + tileName + ".png"));
@@ -81,8 +82,8 @@ public class Layer {
 		boolean collision = true;
 		do {
 			collision = false;
-			newStairs[0] = ThreadLocalRandom.current().nextInt(0+TILESIZEWIDTH, drawSize-TILESIZEWIDTH + 1);
-			newStairs[1] = ThreadLocalRandom.current().nextInt(0+TILESIZEHEIGHT, drawSize-TILESIZEHEIGHT + 1);
+			newStairs[0] = ThreadLocalRandom.current().nextInt(1, 10)*TILESIZEWIDTH;
+			newStairs[1] = ThreadLocalRandom.current().nextInt(1, 10)*TILESIZEHEIGHT;
 			
 			// for (item in items)
 				// if collisions with x, y
@@ -95,20 +96,23 @@ public class Layer {
 		return new Stairs(newStairs, "res/Layer" + level + "/Stairsup", TILESIZEWIDTH, TILESIZEHEIGHT);
 	}
 
-	public void draw() {
+	public void draw() throws SlickException {
 		drawLayer();     // first draw the floor and walls
 		drawStairs();   //  then the stairs
 		drawItems();   //   then the items
 	}
 
-	private void drawLayer() {
+	private void drawLayer() throws SlickException {
 
 		GL11.glColor3f(1, 1, 1);
+		Image background = new Image("res/sideMenuBG.png"); //The background
+		background.draw(height/2-TILESIZEWIDTH*2-TILESIZEWIDTH/3, 0, TILESIZEWIDTH*3+TILESIZEWIDTH/3, height);
+			
 
 
-		bgTextures.get("Ground").bind();
+		bgTextures.get("Ground2").bind();
 
-		for (int i = TILESIZEHEIGHT; i < height/2-TILESIZEHEIGHT/3; i += TILESIZEHEIGHT) {
+		for (int i = TILESIZEHEIGHT; i < height/2-TILESIZEHEIGHT/2; i += TILESIZEHEIGHT) {
 			for (int j = TILESIZEWIDTH; j < drawSize; j += TILESIZEWIDTH) {
 				GL11.glBegin(GL11.GL_QUADS);
 
@@ -153,16 +157,16 @@ public class Layer {
 		for (int i = TILESIZEHEIGHT; i < height/2-TILESIZEHEIGHT/3; i += TILESIZEHEIGHT) {
 			GL11.glBegin(GL11.GL_QUADS);
 
-			GL11.glVertex2f(drawSize, i);
+			GL11.glVertex2f(drawSize-TILESIZEWIDTH/2, i);
 			GL11.glTexCoord2f(0, 0);
 
-			GL11.glVertex2f(drawSize, i + TILESIZEHEIGHT);
+			GL11.glVertex2f(drawSize-TILESIZEWIDTH/2, i + TILESIZEHEIGHT);
 			GL11.glTexCoord2f(1, 0);
 
-			GL11.glVertex2f(drawSize + TILESIZEWIDTH, i + TILESIZEHEIGHT);
+			GL11.glVertex2f(drawSize-TILESIZEWIDTH/2 + TILESIZEWIDTH, i + TILESIZEHEIGHT);
 			GL11.glTexCoord2f(1, 1);
 
-			GL11.glVertex2f(drawSize + TILESIZEWIDTH, i);
+			GL11.glVertex2f(drawSize-TILESIZEWIDTH/2 + TILESIZEWIDTH, i);
 			GL11.glTexCoord2f(0, 1);
 
 			GL11.glEnd();
@@ -170,7 +174,7 @@ public class Layer {
 
 		bgTextures.get("topWall").bind();
 
-		for (int i = TILESIZEWIDTH; i < drawSize; i += TILESIZEWIDTH) {
+		for (int i = TILESIZEWIDTH; i < drawSize-TILESIZEWIDTH/2; i += TILESIZEWIDTH) {
 			GL11.glBegin(GL11.GL_QUADS);
 
 			GL11.glVertex2f(i, height/2-TILESIZEHEIGHT/3);
@@ -189,7 +193,7 @@ public class Layer {
 		}
 		bgTextures.get("botWall").bind();
 
-		for (int i = TILESIZEWIDTH; i < drawSize; i += TILESIZEWIDTH) {
+		for (int i = TILESIZEWIDTH; i < drawSize-TILESIZEWIDTH/2; i += TILESIZEWIDTH) {
 			GL11.glBegin(GL11.GL_QUADS);
 
 			GL11.glVertex2f(i, 0);
@@ -226,16 +230,16 @@ public class Layer {
 		bgTextures.get("topRight").bind();
 		GL11.glBegin(GL11.GL_QUADS);
 
-		GL11.glVertex2f(drawSize, height/2-TILESIZEHEIGHT/3);
+		GL11.glVertex2f(drawSize-TILESIZEWIDTH/2, height/2-TILESIZEHEIGHT/3);
 		GL11.glTexCoord2f(0, 0);
 
-		GL11.glVertex2f(drawSize, height/2-TILESIZEHEIGHT/3 + TILESIZEHEIGHT);
+		GL11.glVertex2f(drawSize-TILESIZEWIDTH/2, height/2-TILESIZEHEIGHT/3 + TILESIZEHEIGHT);
 		GL11.glTexCoord2f(1, 0);
 
-		GL11.glVertex2f(drawSize + TILESIZEWIDTH, height/2-TILESIZEHEIGHT/3 + TILESIZEHEIGHT);
+		GL11.glVertex2f(drawSize+TILESIZEWIDTH/2, height/2-TILESIZEHEIGHT/3 + TILESIZEHEIGHT);
 		GL11.glTexCoord2f(1, 1);
 
-		GL11.glVertex2f(drawSize + TILESIZEWIDTH, height/2-TILESIZEHEIGHT/3);
+		GL11.glVertex2f(drawSize+TILESIZEWIDTH/2, height/2-TILESIZEHEIGHT/3);
 		GL11.glTexCoord2f(0, 1);
 
 		GL11.glEnd();
@@ -260,16 +264,16 @@ public class Layer {
 		bgTextures.get("botRight").bind();
 		GL11.glBegin(GL11.GL_QUADS);
 
-		GL11.glVertex2f(drawSize, 0);
+		GL11.glVertex2f(drawSize-TILESIZEWIDTH/2, 0);
 		GL11.glTexCoord2f(0, 0);
 
-		GL11.glVertex2f(drawSize, 0 + TILESIZEHEIGHT);
+		GL11.glVertex2f(drawSize-TILESIZEWIDTH/2, 0 + TILESIZEHEIGHT);
 		GL11.glTexCoord2f(1, 0);
 
-		GL11.glVertex2f(drawSize + TILESIZEWIDTH, 0 + TILESIZEHEIGHT);
+		GL11.glVertex2f(drawSize+TILESIZEWIDTH/2, 0 + TILESIZEHEIGHT);
 		GL11.glTexCoord2f(1, 1);
 
-		GL11.glVertex2f(drawSize + TILESIZEWIDTH, 0);
+		GL11.glVertex2f(drawSize+TILESIZEWIDTH/2, 0);
 		GL11.glTexCoord2f(0, 1);
 
 		GL11.glEnd();

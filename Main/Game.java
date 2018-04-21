@@ -7,6 +7,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.Texture;
 
@@ -21,8 +22,10 @@ public class Game {
 	private Player player;
 	private SideMenu sm;
 	private int timer = 0;
+	private int timer2 = 0;
 	private int layerNum = 1;
 	private EnemyGenerator eg;
+	private boolean timerSet =true;
 	Texture t;
 
 	public static void main(String[] args) throws SlickException, Exception {
@@ -49,7 +52,9 @@ public class Game {
 
 	public void update() throws SlickException, IOException {
 		clearGL();
-
+		if (timer2 >0) {
+			timer2--;
+		}
 		if (timer > 0) {
 			timer--;
 		}
@@ -68,7 +73,7 @@ public class Game {
 					if (timer == 0) {
 						currentLayer = layers.get(currentLayer.getLevel());
 						player.setCurrentLayer(layers.get(currentLayer.getLevel() - 1));
-						timer = 100;
+						timer = 80;
 					}
 				}
 			}
@@ -80,7 +85,7 @@ public class Game {
 						if (timer == 0) {
 							currentLayer = layers.get(currentLayer.getLevel() - 2);
 							player.setCurrentLayer(currentLayer);
-							timer = 100;
+							timer = 80;
 						}
 					}
 				}
@@ -106,6 +111,25 @@ public class Game {
 		}
 		player.draw();
 		sm.draw(player, currentLayer.getLayer());
+		if (player.getHasOnion()) {
+			if(timerSet) {
+				timer2=500;
+				timerSet = false;
+			}
+			win();
+			if (timer2==0) {
+				close();
+			}
+		} else if (player.getDead()) {
+			if(timerSet) {
+				timer2=500;
+				timerSet = false;
+			}
+			lose();
+			if (timer2==0) {
+				close();
+			}
+		}
 
 		Display.update();
 
@@ -131,6 +155,50 @@ public class Game {
 	private void close() {
 		Display.destroy();
 		System.exit(0);
+	}
+	
+	private void win() throws SlickException {
+		Image img = new Image("res/SideMenu/youwin.png");
+		img.bind();
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glBegin(GL11.GL_QUADS);
+
+		GL11.glVertex2f(11 * TILESIZEWIDTH , 8 * TILESIZEHEIGHT);
+		GL11.glTexCoord2f(0, 0);
+
+		GL11.glVertex2f(11 * TILESIZEWIDTH , 8 * TILESIZEHEIGHT + TILESIZEHEIGHT);
+		GL11.glTexCoord2f(1, 0);
+
+		GL11.glVertex2f(11 * TILESIZEWIDTH  + TILESIZEWIDTH*4 , 8 * TILESIZEHEIGHT + TILESIZEHEIGHT);
+		GL11.glTexCoord2f(1, 1);
+
+		GL11.glVertex2f(11 * TILESIZEWIDTH  + TILESIZEWIDTH*4 , 8 * TILESIZEHEIGHT);
+		GL11.glTexCoord2f(0, 1);
+
+		GL11.glEnd();
+	}
+	
+	private void lose() throws SlickException {
+		Image img = new Image("res/SideMenu/youlose.png");
+		img.bind();
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glBegin(GL11.GL_QUADS);
+
+		GL11.glVertex2f(11 * TILESIZEWIDTH , 8 * TILESIZEHEIGHT);
+		GL11.glTexCoord2f(0, 0);
+
+		GL11.glVertex2f(11 * TILESIZEWIDTH , 8 * TILESIZEHEIGHT + TILESIZEHEIGHT);
+		GL11.glTexCoord2f(1, 0);
+
+		GL11.glVertex2f(11 * TILESIZEWIDTH  + TILESIZEWIDTH*4 , 8 * TILESIZEHEIGHT + TILESIZEHEIGHT);
+		GL11.glTexCoord2f(1, 1);
+
+		GL11.glVertex2f(11 * TILESIZEWIDTH + TILESIZEWIDTH*4 , 8 * TILESIZEHEIGHT);
+		GL11.glTexCoord2f(0, 1);
+
+		GL11.glEnd();
 	}
 
 	private void intiGL() {

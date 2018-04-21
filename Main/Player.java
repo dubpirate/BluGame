@@ -7,6 +7,7 @@ import org.newdawn.slick.SlickException;
 
 import Interactable.Chest;
 import Interactable.Key;
+import Interactable.Onion;
 import Items.Item;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class Player {
 	private ArrayList<Enemy> enemyList;
 	private int health = 3;
 	private boolean dead = false;
+	private boolean hasOnion = false;
 
 	public Player(int tileHeight, int tileWidth, Layer currentLayer, ArrayList<Enemy> enemyList)
 			throws SlickException {
@@ -48,9 +50,9 @@ public class Player {
 
 	public void setHealth(int modifier) {
 		health = health + modifier;
-		// if (health>3) {
-		// health=3;
-		// }
+		 if (health>3) {
+			 health=3;
+		 }
 		if (health <= 0) {
 			dead = true;
 		}
@@ -144,8 +146,10 @@ public class Player {
 					if (i instanceof Chest) {
 						for (Item item : inventory) {
 							if (item instanceof Key && ((Key) item).getCode() == ((Chest) i).getCode()) {
+								health++;
 								Chest newChest = ((Chest) i).unlock();
 								currentLayer.removeItem(i);
+								inventory.remove(item);
 								currentLayer.getContents().add(newChest);
 								break;
 							}
@@ -153,6 +157,9 @@ public class Player {
 					}
 				} else {
 					inventory.add(i);
+					if (i instanceof Onion) {
+						hasOnion=true;
+					}
 					currentLayer.removeItem(i);
 				}
 			}
@@ -185,5 +192,9 @@ public class Player {
 
 	public int getHealth() {
 		return health;
+	}
+	
+	public boolean getHasOnion() {
+		return hasOnion;
 	}
 }

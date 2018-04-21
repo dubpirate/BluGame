@@ -50,9 +50,9 @@ public class SideMenu {
 		}
 	}
 
-	public void draw(Player player, int layer) throws IOException {
+	public void draw(Player player, int layer) throws IOException, SlickException {
 		GL11.glColor3f(1, 1, 1);
-		bg = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/Layer"+layer+"/Side.png"));
+		bg = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/Layer" + layer + "/Side.png"));
 		bg.bind();
 		for (int i = 0; i < height; i += TILESIZEHEIGHT) {
 			for (int j = 0; j < 4; j++) {
@@ -73,6 +73,36 @@ public class SideMenu {
 				GL11.glEnd();
 			}
 		}
+
+		heart.bind();
+
+		for (int i = 0; i < 3; i++) {
+			if (i < player.getHealth()) {
+				heart.bind();
+			} else {
+				heartEmpty.bind();
+			}
+			GL11.glBegin(GL11.GL_QUADS);
+
+			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i,
+					height / 2 - TILESIZEHEIGHT);
+			GL11.glTexCoord2f(0, 0);
+
+			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i,
+					height / 2 - TILESIZEHEIGHT + TILESIZEHEIGHT);
+			GL11.glTexCoord2f(1, 0);
+
+			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i + TILESIZEWIDTH,
+					height / 2 - TILESIZEHEIGHT + TILESIZEHEIGHT);
+			GL11.glTexCoord2f(1, 1);
+
+			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i + TILESIZEWIDTH,
+					height / 2 - TILESIZEHEIGHT);
+			GL11.glTexCoord2f(0, 1);
+
+			GL11.glEnd();
+		}
+
 		// System.out.println(counter);
 
 		ArrayList<Item> item = new ArrayList<Item>(player.getInventory());
@@ -82,8 +112,7 @@ public class SideMenu {
 			for (int i = 0; i < (player.getInventory().size() + 2) / 3; i++) {
 				for (int j = 0; j < 3; j++) {
 					System.out.println(count);
-					Texture inv = TextureLoader.getTexture("PNG", ResourceLoader
-							.getResourceAsStream("res/Interactables/" + item.get(count).getName() + ".png"));
+					Image inv = new Image("res/Interactables/"+item.get(count).getName()+".png");
 					inv.bind();
 					GL11.glBegin(GL11.GL_QUADS);
 
@@ -107,35 +136,6 @@ public class SideMenu {
 					}
 				}
 			}
-		}
-
-		heart.bind();
-
-		for (
-
-				int i = 0; i < 3; i++) {
-			if(i<player.getHealth()) {
-				heart.bind();
-			}else {heartEmpty.bind();}
-			GL11.glBegin(GL11.GL_QUADS);
-
-			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i,
-					height / 2 - TILESIZEHEIGHT);
-			GL11.glTexCoord2f(0, 0);
-
-			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i,
-					height / 2 - TILESIZEHEIGHT + TILESIZEHEIGHT);
-			GL11.glTexCoord2f(1, 0);
-
-			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i + TILESIZEWIDTH,
-					height / 2 - TILESIZEHEIGHT + TILESIZEHEIGHT);
-			GL11.glTexCoord2f(1, 1);
-
-			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i + TILESIZEWIDTH,
-					height / 2 - TILESIZEHEIGHT);
-			GL11.glTexCoord2f(0, 1);
-
-			GL11.glEnd();
 		}
 
 	}

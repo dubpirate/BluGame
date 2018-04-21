@@ -1,3 +1,5 @@
+package Main;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -14,14 +16,16 @@ import org.lwjgl.opengl.GL11;
 
 public class Game{
 	
-	private static final int TILESIZE = 48;
-	private static final int WIDTH  = TILESIZE * 25;  // 1248
-	private static final int HEIGHT = TILESIZE * 20; //  960
+	private static final int TILESIZEHEIGHT = 48;
+	private static final int TILESIZEWIDTH = 36;
+	private static final int WIDTH  = 1440;   // 1440
+	private static final int HEIGHT = 960; //  960
 	private static ArrayList<Layer> layers = new ArrayList<Layer>();
 	private static Layer currentLayer;
-	private final String[] textures = {"res/Ground1.png", "res/Ground2.png", "res/Ground3.png", "res/Ground4.png", "res/Ground5.png"};
+	private Player player; 
+	private SideMenu sm;
 	
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws SlickException, Exception {
 
 		Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 		Display.create();
@@ -32,24 +36,31 @@ public class Game{
 		game.close();
 	}
 
-	public Game() {
+	public Game() throws IOException, SlickException {
 		intiGL();
 		generateLayers();
+		player = new Player(TILESIZEHEIGHT,TILESIZEWIDTH,WIDTH,HEIGHT);
+		sm = new SideMenu(3,WIDTH,HEIGHT);
 	}
 	
-	public void update() {
+	public void update() throws SlickException {
 		clearGL();
 		
-		inputs(new Input(HEIGHT));
+		//inputs(new Input(HEIGHT));
 		
 		currentLayer.draw();
+		player.move();
+		player.draw();
+		sm.draw();
 		
 		Display.update();
 	}
 	
-	private void generateLayers() {
-		for (int i = 0; i < textures.length; i ++) {	
-			layers.add(new Layer(i, textures[i], null, WIDTH, HEIGHT));
+	private void generateLayers() throws IOException {
+		Layer prev = null;
+		for (int i = 1; i <= 5; i ++) {	
+			layers.add(new Layer(prev, i, "res/Layer"+i+"/", null, WIDTH, HEIGHT));
+			prev = layers.get(i-1);
 		}
 		currentLayer = layers.get(0);
 	}

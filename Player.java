@@ -51,20 +51,28 @@ public class Player {
 		while (Keyboard.next()) {
 		    if (Keyboard.getEventKeyState()) {
 		        if (Keyboard.getEventKey() == Keyboard.KEY_W) {
-		        y++;
-		        img = new Image("res/Sprites/Man1Back.png");
-		        
-		        } else if (Keyboard.getEventKey() == Keyboard.KEY_D) {
-			    x++;
-			    img = new Image("res/Sprites/Man1Side.png");
+					if (y < 10) {
+						y++;
+					}
+					img = new Image("res/Sprites/Man1Back.png");      
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_D) {
+					if (x < 10) {
+						x++;
+					}
+					img = new Image("res/Sprites/Man1Side.png");
 		        } else if (Keyboard.getEventKey() == Keyboard.KEY_S) {
-			    y--;
-			    img = new Image("res/Sprites/Man1Front.png");
-			    } else if (Keyboard.getEventKey() == Keyboard.KEY_A) {
-			    x--;
-			    img = new Image("res/Sprites/Man1Side.png");
-			    }
-		    }
+		        	if (y>1) {
+					    y--;
+					}
+					img = new Image("res/Sprites/Man1Front.png");
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_A) {
+					if (x > 1) {
+						x--;
+					}
+
+					img = new Image("res/Sprites/Man1Side.png");
+				}
+			}
 		}
 	}
 }

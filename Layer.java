@@ -28,16 +28,16 @@ public class Layer {
 	private Texture bg;
 	private Texture t;
 	private int level; // which layer in the stack is this
-	private ArrayList<? extends Item> items; // all the items in this layer
+	private ArrayList<Item> items = new ArrayList<Item>(); // all the items in this layer
 	private Stairs stairsUp; // Stairs objects
 	private Stairs stairsDown; //
 	private String tileFile;
 	private int lay;
 	Map<String, Texture> bgTextures = new HashMap<String, Texture>();
 	private final String[] textures = { "botRight", "botWall", "Ground", "leftWall", "rightWall", "topLeft", "topRight",
-			"topWall", "botLeft"};
+			"topWall", "botLeft" };
 
-	Layer(Layer prev, int level, String tileFile, ArrayList<? extends Item> items, int width, int height, int lay)
+	Layer(Layer prev, int level, String tileFile, ArrayList<Item> rawItems, int width, int height, int lay)
 			throws IOException {
 		this.level = level;
 		this.lay = lay;
@@ -46,7 +46,7 @@ public class Layer {
 		this.width = width;
 		this.drawSize = height / 2 - menuWidth;
 		this.tileFile = tileFile;
-		
+
 		if (prev != null) {
 			try {
 				stairsDown = new Stairs(prev.getStairsUp().getCoords(), tileFile + lay + "/Stairsdown", TILESIZEWIDTH,
@@ -56,8 +56,9 @@ public class Layer {
 				e.printStackTrace();
 			}
 		}
-		t = TextureLoader.getTexture("PNG",
-				ResourceLoader.getResourceAsStream("res/Aesthetic/rightTorch.png"));
+
+		initContents(rawItems);
+
 		stairsUp = newStairsUp();
 
 		for (int i = 0; i < textures.length; i++) {
@@ -66,6 +67,27 @@ public class Layer {
 					ResourceLoader.getResourceAsStream(tileFile + lay + "/" + tileName + ".png"));
 			bgTextures.put(tileName, tile);
 		}
+	}
+
+	private void initContents(ArrayList<Item> c) {
+		for (Item i : c) {
+			if (i.getCoords() == null) {
+				do {
+					i.setCoords(i.genNewCoords());
+				} while (checkItemCollisions(i));
+				this.items.add(i);
+			}
+		}
+	}
+
+	private boolean checkItemCollisions(Item item) {
+		if (stairsDown != null && item.collidesWith(stairsDown.getCoords())) {
+			return true;
+		}
+		for (Item i : items) {
+			if (i.collidesWith(item.getCoords())) return true;
+		}
+		return false;
 	}
 
 	public int getLevel() {
@@ -109,6 +131,8 @@ public class Layer {
 		} while (collision);
 		return new Stairs(newStairs, tileFile + lay + "/Stairsup", TILESIZEWIDTH, TILESIZEHEIGHT);
 	}
+	
+	
 
 	public void draw() throws SlickException {
 		drawLayer(); // first draw the floor and walls
@@ -287,23 +311,6 @@ public class Layer {
 		GL11.glTexCoord2f(0, 1);
 
 		GL11.glEnd();
-		
-		t.bind();
-		GL11.glBegin(GL11.GL_QUADS);
-
-		GL11.glVertex2f(drawSize - TILESIZEWIDTH / 2, TILESIZEHEIGHT);
-		GL11.glTexCoord2f(0, 0);
-
-		GL11.glVertex2f(drawSize - TILESIZEWIDTH / 2, TILESIZEHEIGHT + TILESIZEHEIGHT);
-		GL11.glTexCoord2f(1, 0);
-
-		GL11.glVertex2f(drawSize + TILESIZEWIDTH / 2, TILESIZEHEIGHT + TILESIZEHEIGHT);
-		GL11.glTexCoord2f(1, 1);
-
-		GL11.glVertex2f(drawSize + TILESIZEWIDTH / 2, TILESIZEHEIGHT);
-		GL11.glTexCoord2f(0, 1);
-
-		GL11.glEnd();
 
 	}
 
@@ -321,6 +328,8 @@ public class Layer {
 	}
 
 	private void drawItems() {
-
+		for(Item i:this.items) {
+			i.draw();
+		}
 	}
 }

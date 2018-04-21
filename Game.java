@@ -14,24 +14,28 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
+import Items.*;
 
-public class Game{
-	
+public class Game {
+
 	private static final int TILESIZEHEIGHT = 48;
 	private static final int TILESIZEWIDTH = 36;
-	private static final int WIDTH  = 1440;   // 1440
-	private static final int HEIGHT = 960; //  960
+	private static final int WIDTH = 1440; // 1440
+	private static final int HEIGHT = 960; // 960
 	private static ArrayList<Layer> layers = new ArrayList<Layer>();
 	private static Layer currentLayer;
-	private Player player; 
+	private Player player;
 	private SideMenu sm;
 	private int timer = 0;
 	private int layerNum = 1;
-	
+	private boolean isLoading = true;
+	Texture t;
+
 	public static void main(String[] args) throws SlickException, Exception {
 
 		Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 		Display.create();
+		
 		Game game = new Game();
 		while (!Display.isCloseRequested()) {
 			game.update();
@@ -41,15 +45,18 @@ public class Game{
 
 	public Game() throws IOException, SlickException {
 		intiGL();
-		generateLayers();
-		player = new Player(TILESIZEHEIGHT,TILESIZEWIDTH,WIDTH,HEIGHT, currentLayer);
-		sm = new SideMenu(3,WIDTH,HEIGHT);
+		int levels = 25;
+		generateLayers(levels);
+		player = new Player(TILESIZEHEIGHT, TILESIZEWIDTH, WIDTH, HEIGHT, currentLayer);
+		sm = new SideMenu(3, WIDTH, HEIGHT);
 	}
-	
-	public void update() throws SlickException {
+
+	public void update() throws SlickException, IOException {
 		clearGL();
-		
-		if (timer>0) {
+
+
+
+		if (timer > 0) {
 			timer--;
 		}
 		currentLayer.draw();
@@ -57,58 +64,53 @@ public class Game{
 		int[] stairsUp = currentLayer.getStairsUp().getCoords();
 		if (stairsUp[0] / TILESIZEWIDTH == player.getX() && stairsUp[1] / TILESIZEHEIGHT == player.getY()) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-				if(timer == 0) {
+				if (timer == 0) {
 					currentLayer = layers.get(currentLayer.getLevel());
 					player.setCurrentLayer(layers.get(currentLayer.getLevel()));
 					timer = 100;
 				}
 			}
 		}
-		
+
 		if (currentLayer.getLevel() > 1) {
 			int[] stairsDown = currentLayer.getStairsDown().getCoords();
 			if (stairsDown[0] / TILESIZEWIDTH == player.getX() && stairsDown[1] / TILESIZEHEIGHT == player.getY()) {
 				if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-					if(timer == 0) {
+					if (timer == 0) {
 						currentLayer = layers.get(currentLayer.getLevel() - 2);
 						player.setCurrentLayer(currentLayer);
 						timer = 100;
-					}	
+					}
 				}
 			}
 		}
-		
+
 		currentLayer.draw();
 		player.move();
 		player.draw();
 		sm.draw();
-		
+
 		Display.update();
+
 	}
+
 	
-	private void generateLayers() throws IOException {
+	private void generateLayers(int levels) throws IOException, SlickException {
+		ContentsGenerator gs = new ContentsGenerator(levels);
 		Layer prev = null;
-		for (int i = 1; i <= 25; i ++) {	
-			if(i%5 == 0 && i <21) {layerNum++;};
-			layers.add(new Layer(prev, i, "res/Layer", null, WIDTH, HEIGHT,layerNum));
+		ArrayList<Item> contents;
+		for (int i = 1; i <= levels; i++) {
+			if (i % 5 == 0 && i < 21) {
+				layerNum++;
+			}
 			
-			prev = layers.get(i-1);
+			
+			layers.add(new Layer(prev, i, "res/Layer", gs.getNextContents(), WIDTH, HEIGHT, layerNum));
+
+			prev = layers.get(i - 1);
 		}
 		currentLayer = layers.get(0);
-	}
-	
-	private void inputs(Input input) {
-		if (input.isKeyDown(Input.KEY_ESCAPE)) {
-			close();
-		} else if (input.isKeyDown(Input.KEY_X)) {
-			if (currentLayer.getLevel() != 4) {
-				currentLayer = layers.get(currentLayer.getLevel()+1);
-			}
-		} else if (input.isKeyDown(Input.KEY_Z)) {
-			if (currentLayer.getLevel() != 0) {
-				currentLayer = layers.get(currentLayer.getLevel()-1);
-			}
-		}
+		isLoading = false;
 	}
 	
 	private void close() {

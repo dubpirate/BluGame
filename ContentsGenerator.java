@@ -38,6 +38,24 @@ public class ContentsGenerator{
 			System.out.println("Adding Moss to layer");
 			lists.get(pickLayer()).add(new Moss());
 		}
+		
+		// Rubble
+		quantity = ThreadLocalRandom.current().nextInt(5, 21);
+		System.out.println("Moss quan:" + quantity);
+		for (int i = 0; i < quantity; i++) {
+			System.out.println("Adding Moss to layer");
+			lists.get(pickLayer()).add(new Rubble());
+		}
+
+		
+		// Rock
+		quantity = ThreadLocalRandom.current().nextInt(3, 10);
+		System.out.println("Moss quan:" + quantity);
+		for (int i = 0; i < quantity; i++) {
+			System.out.println("Adding Moss to layer");
+			lists.get(pickLayer()).add(new Rock());
+		}
+
 
 		// Cracks
 		quantity = ThreadLocalRandom.current().nextInt(5, 21);
@@ -45,26 +63,14 @@ public class ContentsGenerator{
 			lists.get(pickLayer()).add(new Crack());
 		}
 		
-		// Rocks
-		quantity = ThreadLocalRandom.current().nextInt(5, 21);
-		for (int i = 0; i < quantity; i++) {
-			lists.get(pickLayer()).add(new Rock());
-		}
-		
-		// Rubble
-		quantity = ThreadLocalRandom.current().nextInt(5, 21);
-		for (int i = 0; i < quantity; i++) {
-			lists.get(pickLayer()).add(new Rubble());
-		}
-		
 		// Torches (right)
-		quantity = ThreadLocalRandom.current().nextInt(1, 5);
+		quantity = ThreadLocalRandom.current().nextInt(5, 10);
 		for (int i = 0; i < quantity; i++) {
 			lists.get(pickLayer()).add(new Torch("right"));
 		}
 		
 		// Torches (left)
-		quantity = ThreadLocalRandom.current().nextInt(1, 5);
+		quantity = ThreadLocalRandom.current().nextInt(5,10);
 		for (int i = 0; i < quantity; i++) {
 			lists.get(pickLayer()).add(new Torch("left"));
 		}
@@ -80,7 +86,7 @@ public class ContentsGenerator{
 	private int pickLayer() {
 		int choice;
 		do {
-			choice = ThreadLocalRandom.current().nextInt(0, 5);
+			choice = ThreadLocalRandom.current().nextInt(0, 25);
 		} while (lists.get(choice).size() > 25);
 		return choice;
 	}

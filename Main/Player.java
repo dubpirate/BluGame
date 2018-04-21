@@ -6,12 +6,14 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import Interactable.Chest;
+import Interactable.Coin;
 import Interactable.Key;
 import Interactable.Onion;
 import Items.Item;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Player {
 	private int x;
@@ -146,7 +148,7 @@ public class Player {
 					if (i instanceof Chest) {
 						for (Item item : inventory) {
 							if (item instanceof Key && ((Key) item).getCode() == ((Chest) i).getCode()) {
-								health++;
+								randomBonus();
 								Chest newChest = ((Chest) i).unlock();
 								currentLayer.removeItem(i);
 								inventory.remove(item);
@@ -163,6 +165,19 @@ public class Player {
 					currentLayer.removeItem(i);
 				}
 			}
+		}
+	}
+	
+	private void randomBonus() {
+		int c = ThreadLocalRandom.current().nextInt(0,3);
+		switch (c){
+			case 0:
+			case 1:
+				health++;
+				break;
+			case 2:
+				inventory.add(new Coin());
+				break;
 		}
 	}
 
@@ -198,3 +213,4 @@ public class Player {
 		return hasOnion;
 	}
 }
+

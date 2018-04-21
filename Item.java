@@ -27,6 +27,10 @@ public abstract class Item {
 	
 	public abstract int[] getCoords();
 	
+	public abstract void setCoords(int[] c);
+	
+	public abstract int[] genNewCoords();
+	
 	/**
 	 * This method checks if it exists in the same coords as coords passed.
 	 *  @param c stands for x-y coords of the thing it might be colliding with.

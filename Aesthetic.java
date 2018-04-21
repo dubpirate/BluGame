@@ -1,5 +1,7 @@
 package Items;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.lwjgl.opengl.GL11;
 
 public class Aesthetic extends Item{
@@ -33,6 +35,17 @@ public class Aesthetic extends Item{
 	
 	@Override
 	public int[] getCoords(){ return coords; }
+	
+	@Override
+	public void setCoords(int[] c) {this.coords = c;}
+
+	@Override
+	public int[] genNewCoords() {
+		int [] c = new int[2];
+		c[0] = ThreadLocalRandom.current().nextInt(1, 10)*TILESIZEWIDTH;
+		c[1] = ThreadLocalRandom.current().nextInt(1, 10)*TILESIZEHEIGHT;
+		return c;
+	}
 	
 	@Override
 	public boolean collidesWith(int[] c) {

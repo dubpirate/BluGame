@@ -1,34 +1,54 @@
-package Items;
+package Main;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-import Main.Layer;
-import Main.Player;
+import Aesthetic.Rock;
+import Interactable.Chest;
+
 import java.lang.*;
 
-public class Enemy extends Item {
+public class Enemy {
 	private Player player;
 	private Layer currentLayer;
 	private int x;
 	private int y;
+	private int tileWidth;
+	private int tileHeight;
 	Image img;
 
-	public Enemy(String texture, int[] coords, Player player, Layer currentLayer) throws SlickException {
-		super(texture, coords);
+	public Enemy( Player player, Layer currentLayer, int tileWidth, int tileHeight) throws SlickException {
 		this.player = player;
 		this.currentLayer = currentLayer;
-		x = coords[0]/TILESIZEWIDTH;
-		y = coords[1]/TILESIZEHEIGHT;
-		img = new Image(texture);
+		this.tileWidth = tileWidth;
+		this.tileHeight = tileHeight;
+		setPosition();
+		img = new Image("res/Sprites/ShadowFront.png");
 		draw();
 
 	}
 
-	@Override
+	public void setPosition() {
+		boolean flag = false;
+		while(!flag) {
+			flag = true;
+			x = ThreadLocalRandom.current().nextInt(1, 9);
+			y = ThreadLocalRandom.current().nextInt(1, 9);
+			for (int i=0; i<currentLayer.getContents().size(); i++) {
+				if (currentLayer.getContents().get(i) instanceof Rock || currentLayer.getContents().get(i) instanceof Chest) {
+					int[] itemCoords = currentLayer.getContents().get(i).getCoords();
+					if (x==itemCoords[0]/tileWidth && y==itemCoords[1]/tileHeight) {
+						flag = false;
+					}
+				}
+			}
+		}
+	}
+	
 	public void draw() {
 		if (currentLayer.getLevel()==player.getCurrentLayer().getLevel()) {
 			img.bind();
@@ -36,34 +56,23 @@ public class Enemy extends Item {
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			GL11.glBegin(GL11.GL_QUADS);
 
-			GL11.glVertex2f(x * TILESIZEWIDTH, y * TILESIZEHEIGHT);
+			GL11.glVertex2f(x * tileWidth, y * tileHeight);
 			GL11.glTexCoord2f(0, 0);
 
-			GL11.glVertex2f(x * TILESIZEWIDTH, y * TILESIZEHEIGHT + TILESIZEHEIGHT);
+			GL11.glVertex2f(x * tileWidth, y * tileHeight + tileHeight);
 			GL11.glTexCoord2f(1, 0);
 
-			GL11.glVertex2f(x * TILESIZEWIDTH + TILESIZEWIDTH, y * TILESIZEHEIGHT + TILESIZEHEIGHT);
+			GL11.glVertex2f(x * tileWidth + tileWidth, y * tileHeight + tileHeight);
 			GL11.glTexCoord2f(1, 1);
 
-			GL11.glVertex2f(x * TILESIZEWIDTH + TILESIZEWIDTH, y * TILESIZEHEIGHT);
+			GL11.glVertex2f(x * tileWidth + tileWidth, y * tileHeight);
 			GL11.glTexCoord2f(0, 1);
 
 			GL11.glEnd();
 		}	
 	}
-
-	@Override
-	public int[] getCoords() {
-		return coords;
-	}
-
-	@Override
-	public boolean collidesWith(int[] c) {
-		return (c[0] == this.coords[0] && c[1] == this.coords[1]);
-	}
 	
 	public void move() throws SlickException {
-
 		if (currentLayer.getLevel()==player.getCurrentLayer().getLevel()) {
 			int dx = x - player.getX();
 			int dy = y - player.getY();

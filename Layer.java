@@ -5,14 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
-
+import Items.*;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
-import org.newdawn.slick.tests.xml.Item;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
@@ -31,34 +30,38 @@ public class Layer {
 	private ArrayList<? extends Item> items; // all the items in this layer
 	private Stairs stairsUp; // Stairs objects
 	private Stairs stairsDown; //
+	private String tileFile;
+	private int lay;
 	Map<String, Texture> bgTextures = new HashMap<String, Texture>();
-	private final String[] textures = { "botRight", "botWall", "Ground2", "leftWall", "rightWall", "topLeft",
-			"topRight", "topWall", "botLeft" };
+	private final String[] textures = { "botRight", "botWall", "Ground", "leftWall", "rightWall", "topLeft", "topRight",
+			"topWall", "botLeft" };
 
-	Layer(Layer prev, int level, String tileFile, ArrayList<? extends Item> items, int width, int height)
+	Layer(Layer prev, int level, String tileFile, ArrayList<? extends Item> items, int width, int height, int lay)
 			throws IOException {
 		this.level = level;
+		this.lay = lay;
 		this.items = items;
 		this.height = height;
 		this.width = width;
 		this.drawSize = height / 2 - menuWidth;
-
+		this.tileFile = tileFile;
+		
 		if (prev != null) {
 			try {
-				stairsDown = new Stairs(prev.getStairsUp().getCoords(), "res/Layer" + level + "/Stairsdown",
-						TILESIZEWIDTH, TILESIZEHEIGHT);
+				stairsDown = new Stairs(prev.getStairsUp().getCoords(), tileFile + lay + "/Stairsdown", TILESIZEWIDTH,
+						TILESIZEHEIGHT);
 			} catch (java.lang.NullPointerException e) {
 				System.out.println("Error loading stairs on Layer" + level);
 				e.printStackTrace();
 			}
 		}
 
-		if (level != 5) {
-			stairsUp = newStairsUp();
-		}
+		stairsUp = newStairsUp();
+
 		for (int i = 0; i < textures.length; i++) {
 			String tileName = textures[i];
-			tile = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream(tileFile + tileName + ".png"));
+			tile = TextureLoader.getTexture("PNG",
+					ResourceLoader.getResourceAsStream(tileFile + lay + "/" + tileName + ".png"));
 			bgTextures.put(tileName, tile);
 		}
 	}
@@ -90,7 +93,8 @@ public class Layer {
 			newStairs[0] = ThreadLocalRandom.current().nextInt(1, 10) * TILESIZEWIDTH;
 			newStairs[1] = ThreadLocalRandom.current().nextInt(1, 10) * TILESIZEHEIGHT;
 
-			if (stairsDown.getCoords()[0] != newStairs[0] && stairsDown.getCoords()[1] != newStairs[1]) {
+			if (stairsDown != null && stairsDown.getCoords()[0] != newStairs[0]
+					&& stairsDown.getCoords()[1] != newStairs[1]) {
 				collision = true;
 			} else {
 				// for (item in items)
@@ -101,8 +105,7 @@ public class Layer {
 				//
 			}
 		} while (collision);
-
-		return new Stairs(newStairs, "res/Layer" + level + "/Stairsup", TILESIZEWIDTH, TILESIZEHEIGHT);
+		return new Stairs(newStairs, tileFile + lay + "/Stairsup", TILESIZEWIDTH, TILESIZEHEIGHT);
 	}
 
 	public void draw() throws SlickException {
@@ -115,7 +118,7 @@ public class Layer {
 
 		GL11.glColor3f(1, 1, 1);
 
-		bgTextures.get("Ground2").bind();
+		bgTextures.get("Ground").bind();
 
 		for (int i = TILESIZEHEIGHT; i < height / 2 - TILESIZEHEIGHT / 2; i += TILESIZEHEIGHT) {
 			for (int j = TILESIZEWIDTH; j < drawSize; j += TILESIZEWIDTH) {
@@ -292,7 +295,7 @@ public class Layer {
 		}
 
 		// this draws the stairs down, if there are any.
-		if (level != 5) {
+		if (stairsUp != null) {
 			stairsUp.draw();
 		}
 

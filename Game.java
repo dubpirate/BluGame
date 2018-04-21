@@ -26,6 +26,7 @@ public class Game{
 	private Player player; 
 	private SideMenu sm;
 	private int timer = 0;
+	private int layerNum = 1;
 	
 	public static void main(String[] args) throws SlickException, Exception {
 
@@ -87,8 +88,10 @@ public class Game{
 	
 	private void generateLayers() throws IOException {
 		Layer prev = null;
-		for (int i = 1; i <= 5; i ++) {	
-			layers.add(new Layer(prev, i, "res/Layer"+i+"/", null, WIDTH, HEIGHT));
+		for (int i = 1; i <= 25; i ++) {	
+			if(i%5 == 0 && i <21) {layerNum++;};
+			layers.add(new Layer(prev, i, "res/Layer", null, WIDTH, HEIGHT,layerNum));
+			
 			prev = layers.get(i-1);
 		}
 		currentLayer = layers.get(0);

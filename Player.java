@@ -58,32 +58,37 @@ public class Player {
 		GL11.glEnd();
 	}
 	
-	public void move() throws SlickException {
+	public boolean move() throws SlickException {
 		while (Keyboard.next()) {
 		    if (Keyboard.getEventKeyState()) {
 		        if (Keyboard.getEventKey() == Keyboard.KEY_W) {
 					if (y < 10) {
-						y++;
+						y++;						
 					}
-					img = new Image("res/Sprites/Man2Back.png");      
+					img = new Image("res/Sprites/Man2Back.png"); 
+					return true;
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_D) {
 					if (x < 9) {
 						x++;
 					}
 					img = new Image("res/Sprites/Man2Right.png");
+					return true;
 		        } else if (Keyboard.getEventKey() == Keyboard.KEY_S) {
 		        	if (y>1) {
 					    y--;
 					}
 					img = new Image("res/Sprites/Man2Front.png");
+					return true;
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_A) {
 					if (x > 1) {
 						x--;
 					}
 					img = new Image("res/Sprites/Man2Left.png");
+					return true;
 				}
 			}
 		}
+		return false;
 	}
 	
 	public int getX() {
@@ -91,5 +96,9 @@ public class Player {
 	}
 	public int getY(){
 		return y;
+	}
+
+	public Layer getCurrentLayer() {
+		return currentLayer;
 	}
 }

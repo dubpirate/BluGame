@@ -6,14 +6,13 @@ import java.util.Map;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 import Items.*;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
+
+import Aesthetic.*;
+
 import org.lwjgl.opengl.GL11;
 
 public class Layer {
@@ -28,16 +27,16 @@ public class Layer {
 	private Texture bg;
 	private Texture t;
 	private int level; // which layer in the stack is this
-	private ArrayList<? extends Item> items; // all the items in this layer
+	private ArrayList<Item> items = new ArrayList<Item>(); // all the items in this layer
 	private Stairs stairsUp; // Stairs objects
 	private Stairs stairsDown; //
 	private String tileFile;
 	private int lay;
 	Map<String, Texture> bgTextures = new HashMap<String, Texture>();
 	private final String[] textures = { "botRight", "botWall", "Ground", "leftWall", "rightWall", "topLeft", "topRight",
-			"topWall", "botLeft"};
+			"topWall", "botLeft" };
 
-	Layer(Layer prev, int level, String tileFile, ArrayList<? extends Item> items, int width, int height, int lay)
+	Layer(Layer prev, int level, String tileFile, ArrayList<Item> rawItems, int width, int height, int lay)
 			throws IOException {
 		this.level = level;
 		this.lay = lay;
@@ -46,7 +45,7 @@ public class Layer {
 		this.width = width;
 		this.drawSize = height / 2 - menuWidth;
 		this.tileFile = tileFile;
-		
+
 		if (prev != null) {
 			try {
 				stairsDown = new Stairs(prev.getStairsUp().getCoords(), tileFile + lay + "/Stairsdown", TILESIZEWIDTH,
@@ -56,8 +55,9 @@ public class Layer {
 				e.printStackTrace();
 			}
 		}
-		t = TextureLoader.getTexture("PNG",
-				ResourceLoader.getResourceAsStream("res/Aesthetic/rightTorch.png"));
+
+		initContents(rawItems);
+
 		stairsUp = newStairsUp();
 
 		for (int i = 0; i < textures.length; i++) {
@@ -66,6 +66,28 @@ public class Layer {
 					ResourceLoader.getResourceAsStream(tileFile + lay + "/" + tileName + ".png"));
 			bgTextures.put(tileName, tile);
 		}
+	}
+
+	private void initContents(ArrayList<Item> c) {
+		for (Item i : c) {
+			if (i.getCoords() == null) {
+				do {
+					i.setCoords(i.genNewCoords());
+				} while (checkItemCollisions(i));
+				this.items.add(i);
+			}
+		}
+	}
+
+	private boolean checkItemCollisions(Item item) {
+		if (stairsDown != null && item.collidesWith(stairsDown.getCoords())) {
+			return true;
+		}
+		for (Item i : items) {
+			if (i.collidesWith(item.getCoords()))
+				return true;
+		}
+		return false;
 	}
 
 	public int getLevel() {
@@ -95,16 +117,16 @@ public class Layer {
 			newStairs[0] = ThreadLocalRandom.current().nextInt(1, 10) * TILESIZEWIDTH;
 			newStairs[1] = ThreadLocalRandom.current().nextInt(1, 10) * TILESIZEHEIGHT;
 
-			if (stairsDown != null && stairsDown.getCoords()[0] != newStairs[0]
-					&& stairsDown.getCoords()[1] != newStairs[1]) {
+			if (stairsDown != null && stairsDown.getCoords()[0] == newStairs[0]
+					&& stairsDown.getCoords()[1] == newStairs[1]) {
 				collision = true;
 			} else {
-				// for (item in items)
-				// if collisions with x, y
-				// collision = true;
-				// break;
-				//
-				//
+				for (Item i : this.items)
+					if (i.collidesWith(newStairs) && !(i instanceof Crack) && !(i instanceof Moss)) {
+						collision = true;
+						break;
+					}
+
 			}
 		} while (collision);
 		return new Stairs(newStairs, tileFile + lay + "/Stairsup", TILESIZEWIDTH, TILESIZEHEIGHT);
@@ -287,23 +309,6 @@ public class Layer {
 		GL11.glTexCoord2f(0, 1);
 
 		GL11.glEnd();
-		
-		t.bind();
-		GL11.glBegin(GL11.GL_QUADS);
-
-		GL11.glVertex2f(drawSize - TILESIZEWIDTH / 2, TILESIZEHEIGHT);
-		GL11.glTexCoord2f(0, 0);
-
-		GL11.glVertex2f(drawSize - TILESIZEWIDTH / 2, TILESIZEHEIGHT + TILESIZEHEIGHT);
-		GL11.glTexCoord2f(1, 0);
-
-		GL11.glVertex2f(drawSize + TILESIZEWIDTH / 2, TILESIZEHEIGHT + TILESIZEHEIGHT);
-		GL11.glTexCoord2f(1, 1);
-
-		GL11.glVertex2f(drawSize + TILESIZEWIDTH / 2, TILESIZEHEIGHT);
-		GL11.glTexCoord2f(0, 1);
-
-		GL11.glEnd();
 
 	}
 
@@ -313,14 +318,20 @@ public class Layer {
 			stairsDown.draw();
 		}
 
-		// this draws the stairs down, if there are any.
-		if (stairsUp != null) {
+		// this draws the stairs up, if there are any.
+		if (level != 24) {
 			stairsUp.draw();
 		}
 
 	}
 
 	private void drawItems() {
+		for (Item i : this.items) {
+			i.draw();
+		}
+	}
 
+	public ArrayList<Item> getContents() {
+		return items;
 	}
 }

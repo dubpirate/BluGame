@@ -90,12 +90,17 @@ public class Layer {
 			newStairs[0] = ThreadLocalRandom.current().nextInt(1, 10)*TILESIZEWIDTH;
 			newStairs[1] = ThreadLocalRandom.current().nextInt(1, 10)*TILESIZEHEIGHT;
 			
+			if (stairsDown.getCoords()[0] != newStairs[0] && stairsDown.getCoords()[1] != newStairs[1]) {
+				collision = true;
+			} else{
+			
 			// for (item in items)
 				// if collisions with x, y
-					// collision = true;
+					// collision = true
 					// break;
 				//
 			//
+			}
 		} while (collision);
 		
 		return new Stairs(newStairs, "res/Layer" + level + "/Stairsup", TILESIZEWIDTH, TILESIZEHEIGHT);

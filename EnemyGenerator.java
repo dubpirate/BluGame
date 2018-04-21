@@ -23,9 +23,27 @@ public class EnemyGenerator {
 	}
 	
 	public void makeAll() throws SlickException {
-		int quantity = ThreadLocalRandom.current().nextInt(5,30);
+		int quantity = ThreadLocalRandom.current().nextInt(0,5);
 		for (int i=0; i<quantity; i++) {
-			int layer = ThreadLocalRandom.current().nextInt(0,levels-1);
+			int layer = ThreadLocalRandom.current().nextInt(0,4);
+			Layer currentLayer = layers.get(layer);
+			enemies.add(new Enemy(player,currentLayer,tileWidth, tileHeight));
+		}
+		quantity = ThreadLocalRandom.current().nextInt(5,10);
+		for (int i=0; i<quantity; i++) {
+			int layer = ThreadLocalRandom.current().nextInt(5,9);
+			Layer currentLayer = layers.get(layer);
+			enemies.add(new Enemy(player,currentLayer,tileWidth, tileHeight));
+		}
+		quantity = ThreadLocalRandom.current().nextInt(15,20);
+		for (int i=0; i<quantity; i++) {
+			int layer = ThreadLocalRandom.current().nextInt(10,14);
+			Layer currentLayer = layers.get(layer);
+			enemies.add(new Enemy(player,currentLayer,tileWidth, tileHeight));
+		}
+		quantity = ThreadLocalRandom.current().nextInt(25,30);
+		for (int i=0; i<quantity; i++) {
+			int layer = ThreadLocalRandom.current().nextInt(15,19);
 			Layer currentLayer = layers.get(layer);
 			enemies.add(new Enemy(player,currentLayer,tileWidth, tileHeight));
 		}

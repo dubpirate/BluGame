@@ -6,6 +6,8 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
+import Interactable.Chest;
+import Interactable.Key;
 import Items.Item;
 
 import java.util.ArrayList;
@@ -22,8 +24,11 @@ public class Player {
 	private Layer currentLayer;
 	private ArrayList<Item> inventory = new ArrayList<Item>();
 	private ArrayList<Enemy> enemyList;
+	private int health = 3000;
+	private boolean dead = false;
 
-	public Player(int tileHeight, int tileWidth, int width, int height, Layer currentLayer, ArrayList<Enemy> enemyList) throws SlickException {
+	public Player(int tileHeight, int tileWidth, int width, int height, Layer currentLayer, ArrayList<Enemy> enemyList)
+			throws SlickException {
 		this.width = width;
 		this.height = height;
 		this.tileWidth = tileWidth;
@@ -41,9 +46,19 @@ public class Player {
 	public void setCurrentLayer(Layer layer) {
 		currentLayer = layer;
 	}
-	
+
 	public void setEnemyList(ArrayList<Enemy> enemies) {
 		enemyList = enemies;
+	}
+
+	public void setHealth(int modifier) {
+		health = health + modifier;
+		// if (health>3) {
+		// health=3;
+		// }
+		if (health <= 0) {
+			dead = true;
+		}
 	}
 
 	public void draw() {
@@ -68,7 +83,10 @@ public class Player {
 	}
 
 	public boolean move() throws SlickException {
-
+		if (dead) {
+			img = new Image("res/Sprites/Man2Dead.png");
+			return false;
+		}
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
 				if (Keyboard.getEventKey() == Keyboard.KEY_W) {
@@ -76,7 +94,7 @@ public class Player {
 						y++;
 					}
 					img = new Image("res/Sprites/Man2Back.png");
-					enemyAttack(x,y);
+					enemyAttack(x, y);
 					return true;
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_D) {
 					if (x < 9 && !currentLayer.checkPlayerCollision((x + 1) * tileWidth, (y * tileHeight))) {
@@ -84,21 +102,21 @@ public class Player {
 
 					}
 					img = new Image("res/Sprites/Man2Right.png");
-					enemyAttack(x,y);
+					enemyAttack(x, y);
 					return true;
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_S) {
 					if (y > 1 && !currentLayer.checkPlayerCollision((x * tileWidth), (y - 1) * tileHeight)) {
 						y--;
 					}
 					img = new Image("res/Sprites/Man2Front.png");
-					enemyAttack(x,y);
+					enemyAttack(x, y);
 					return true;
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_A) {
 					if (x > 1 && !currentLayer.checkPlayerCollision((x - 1) * tileWidth, (y * tileHeight))) {
 						x--;
 					}
 					img = new Image("res/Sprites/Man2Left.png");
-					enemyAttack(x,y);
+					enemyAttack(x, y);
 					return true;
 				}
 			}
@@ -106,11 +124,10 @@ public class Player {
 		}
 		return false;
 	}
-	
-	
+
 	public void enemyAttack(int x, int y) throws SlickException {
-		for(Enemy e: enemyList) {
-			if (e.getX() == x && e.getY()==y && e.getLayer().getLevel()==currentLayer.getLevel()) {
+		for (Enemy e : enemyList) {
+			if (e.getX() == x && e.getY() == y && e.getLayer().getLevel() == currentLayer.getLevel()) {
 				e.setDead();
 			}
 		}
@@ -125,13 +142,26 @@ public class Player {
 				if (currentLayer.checkPlayerInteractable(x * tileWidth, y * tileHeight)) {
 					i = currentLayer.checkItemToPickup(x * tileWidth, y * tileHeight);
 				}
-				if (i != null) {
+
+				if (i == null) {
+					int[] c = { x * tileWidth, (y + 1) * tileHeight };
+					i = currentLayer.checkItemToPickup(c[0], c[1]);
+					if (i instanceof Chest) {
+						for (Item item : inventory) {
+							if (item instanceof Key && ((Key) item).getCode() == ((Chest) i).getCode()) {
+								Chest newChest = ((Chest) i).unlock();
+								currentLayer.removeItem(i);
+								currentLayer.getContents().add(newChest);
+								break;
+							}
+						}
+					}
+				} else {
 					inventory.add(i);
 					currentLayer.removeItem(i);
 				}
 			}
 		}
-
 	}
 
 	public int getX() {
@@ -142,7 +172,23 @@ public class Player {
 		return y;
 	}
 
+	public ArrayList<Item> getInventory() {
+		return inventory;
+	}
+
 	public Layer getCurrentLayer() {
 		return currentLayer;
+	}
+
+	public ArrayList<Enemy> getEnemyList() {
+		return enemyList;
+	}
+
+	public boolean getDead() {
+		return dead;
+	}
+
+	public int getHealth() {
+		return health;
 	}
 }

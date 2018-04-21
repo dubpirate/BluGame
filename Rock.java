@@ -1,10 +1,10 @@
 package Aesthetic;
 
 import Items.*;
-import Main.*;
 
 public class Rock extends Aesthetic {
+	private static String name = "Rock";
 	public Rock(){
-		super("res/Aesthetic/Rock.png", null);
+		super("res/Aesthetic/Rock.png", null, name);
 	}
 }

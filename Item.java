@@ -12,7 +12,7 @@ public abstract class Item {
 	protected Texture texture;
 	protected int[] coords;
 	
-	Item(String texture, int[] coords){
+	Item(String texture, int[] coords, String name){
 		try {
 			this.texture = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream(texture));
 		} catch (IOException e) {
@@ -37,4 +37,6 @@ public abstract class Item {
 	 *  @return boolean; true if there is a collision.
 	 * */
 	public abstract boolean collidesWith(int[] c);
+
+	public abstract String getName();
 }

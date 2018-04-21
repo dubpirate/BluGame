@@ -5,9 +5,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import Items.Aesthetic;
 
 public class Torch extends Aesthetic {
+	private static String name = "Torch";
 	private  String type;
 	public Torch(String type) {
-		super("res/Aesthetic/"+type+"Torch.png", null);
+		super("res/Aesthetic/"+type+"Torch.png", null, type);
 		this.type = type;
 	}
 	

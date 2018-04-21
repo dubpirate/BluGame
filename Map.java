@@ -4,8 +4,9 @@ import Items.*;
 
 public class Map extends Aesthetic {
 	private int code;
+	private static String name = "Map";
 	public Map(int code) {
-		super("res/Interactables/Map.png", null);	
+		super("res/Interactables/Map.png", null, name);	
 		this.code = code;
 	}
 	

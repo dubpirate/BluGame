@@ -66,12 +66,27 @@ public class Game {
 		}
 
 		int[] stairsUp = currentLayer.getStairsUp().getCoords();
-		if (stairsUp[0] / TILESIZEWIDTH == player.getX() && stairsUp[1] / TILESIZEHEIGHT == player.getY()) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
-				if (timer == 0) {
-					currentLayer = layers.get(currentLayer.getLevel());
-					player.setCurrentLayer(layers.get(currentLayer.getLevel() - 1));
-					timer = 100;
+		if (!player.getDead()) {
+			if (stairsUp[0] / TILESIZEWIDTH == player.getX() && stairsUp[1] / TILESIZEHEIGHT == player.getY()) {
+				if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+					if (timer == 0) {
+						currentLayer = layers.get(currentLayer.getLevel());
+						player.setCurrentLayer(layers.get(currentLayer.getLevel() - 1));
+						timer = 100;
+					}
+				}
+			}
+
+			if (currentLayer.getLevel() > 1) {
+				int[] stairsDown = currentLayer.getStairsDown().getCoords();
+				if (stairsDown[0] / TILESIZEWIDTH == player.getX() && stairsDown[1] / TILESIZEHEIGHT == player.getY()) {
+					if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+						if (timer == 0) {
+							currentLayer = layers.get(currentLayer.getLevel() - 2);
+							player.setCurrentLayer(currentLayer);
+							timer = 100;
+						}
+					}
 				}
 			}
 		}
@@ -94,7 +109,7 @@ public class Game {
 			eg.getEnemies().get(i).draw();
 		}
 		player.draw();
-		sm.draw();
+		sm.draw(player, currentLayer.getLayer());
 
 		Display.update();
 

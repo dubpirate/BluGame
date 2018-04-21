@@ -104,7 +104,7 @@ public class Layer {
 		}
 		return false;
 	}
-	
+
 	public void removeItem(Item i) {
 		items.remove(i);
 	}
@@ -112,18 +112,14 @@ public class Layer {
 	Item checkItemToPickup(int x, int y) {
 		int[] playerPos = { x, y };
 		for (Item i : items) {
-			if (i.collidesWith(playerPos)&& ((i instanceof Key) || (i instanceof Coin) || (i instanceof Onion))) {
-				if (i instanceof Key) {
-					return i;
-				} else if (i instanceof Coin) {
-					return i;
-				} else if (i instanceof Onion) {
-					return i;
-				}
+			if (i.collidesWith(playerPos)
+					&& ((i instanceof Chest) || (i instanceof Key) || (i instanceof Coin) || (i instanceof Onion))) {
+				return i;
 			}
 		}
 		return null;
 	}
+
 
 	private boolean checkItemCollisions(Item item) {
 		if (stairsDown != null && item.collidesWith(stairsDown.getCoords())) {
@@ -375,6 +371,10 @@ public class Layer {
 		for (Item i : this.items) {
 			i.draw();
 		}
+	}
+
+	int getLayer() {
+		return lay;
 	}
 
 	public ArrayList<Item> getContents() {

@@ -5,8 +5,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.lwjgl.opengl.GL11;
 
 public class Aesthetic extends Item{
-	public Aesthetic(String texture, int [] coords) {
-		super(texture, coords);
+	public Aesthetic(String texture, int [] coords, String name) {
+		super(texture, coords, name);
 	}
 	
 	@Override
@@ -50,5 +50,11 @@ public class Aesthetic extends Item{
 	@Override
 	public boolean collidesWith(int[] c) {
 		return (c[0] == this.coords[0] && c[1] == this.coords[1]);
+	}
+
+	@Override
+	public String getName() {
+		return null;
+		
 	}
 }

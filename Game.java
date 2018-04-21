@@ -1,12 +1,16 @@
+package Main;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
@@ -21,6 +25,7 @@ public class Game{
 	private static ArrayList<Layer> layers = new ArrayList<Layer>();
 	private static Layer currentLayer;
 	private Player player; 
+	private int timer = 0;
 	
 	public static void main(String[] args) throws SlickException, Exception {
 
@@ -33,19 +38,44 @@ public class Game{
 		game.close();
 	}
 
-	public Game() throws IOException {
+	public Game() throws IOException, SlickException {
 		intiGL();
 		generateLayers();
-		player = new Player(TILESIZEHEIGHT,TILESIZEWIDTH,WIDTH,HEIGHT);
+		player = new Player(TILESIZEHEIGHT,TILESIZEWIDTH,WIDTH,HEIGHT,currentLayer);
 	}
 	
-	public void update() {
+	public void update() throws SlickException, InterruptedException {
 		clearGL();
-		
 		//inputs(new Input(HEIGHT));
-		
+		if (timer>0) {
+			timer--;
+		}
 		currentLayer.draw();
 		player.move();
+		int[] stairsUp = currentLayer.getStairsUp().getCoords();
+		if (stairsUp[0] / TILESIZEWIDTH == player.getX() && stairsUp[1] / TILESIZEHEIGHT == player.getY()) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+				if(timer == 0) {
+					currentLayer = layers.get(currentLayer.getLevel());
+					player.setCurrentLayer(layers.get(currentLayer.getLevel()));
+					timer = 100;
+				}
+			}
+		}
+		
+		if (currentLayer.getLevel() > 1) {
+			int[] stairsDown = currentLayer.getStairsDown().getCoords();
+			if (stairsDown[0] / TILESIZEWIDTH == player.getX() && stairsDown[1] / TILESIZEHEIGHT == player.getY()) {
+				if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+					if(timer == 0) {
+						currentLayer = layers.get(currentLayer.getLevel() - 2);
+						player.setCurrentLayer(currentLayer);
+						timer = 100;
+					}	
+				}
+			}
+		}
+		
 		player.draw();
 		
 		Display.update();

@@ -1,3 +1,4 @@
+package Main;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,14 +42,14 @@ public class Layer {
 		
 		if (prev != null) {
 			try {
-			stairsDown = new Stairs(prev.getStairsUp().getCoords(), "res/Layer" + level + "/Stairsup", TILESIZEWIDTH, TILESIZEHEIGHT);
+			stairsDown = new Stairs(prev.getStairsUp().getCoords(), "res/Layer" + level + "/Stairsdown", TILESIZEWIDTH, TILESIZEHEIGHT);
 			} catch (java.lang.NullPointerException e) {
 				System.out.println("Error loading stairs on Layer" + level);
 				e.printStackTrace();
 			}
 		}
 		
-		if (level != 4) {
+		if (level != 5) {
 			stairsUp = newStairsUp();
 		}
 
@@ -67,6 +68,10 @@ public class Layer {
 		return this.stairsUp;
 	}
 	
+	public Stairs getStairsDown() {
+		return this.stairsDown;
+	}
+	
 	
 	/**
 	 * this method looks for a random place in the room to put the stairs.
@@ -80,8 +85,8 @@ public class Layer {
 		boolean collision = true;
 		do {
 			collision = false;
-			newStairs[0] = ThreadLocalRandom.current().nextInt(0+TILESIZEWIDTH, drawSize-TILESIZEWIDTH + 1);
-			newStairs[1] = ThreadLocalRandom.current().nextInt(0+TILESIZEHEIGHT, drawSize-TILESIZEHEIGHT + 1);
+			newStairs[0] = ThreadLocalRandom.current().nextInt(1, 10)*TILESIZEWIDTH;
+			newStairs[1] = ThreadLocalRandom.current().nextInt(1, 10)*TILESIZEHEIGHT;
 			
 			// for (item in items)
 				// if collisions with x, y

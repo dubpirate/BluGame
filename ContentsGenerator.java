@@ -23,7 +23,6 @@ public class ContentsGenerator{
 	 *  then a new instance of each object is created and put into one of the arrayLists
 	 * */
 	private void makeAll(int layers) {
-		System.out.println("Making all");
 		ArrayList<Item> list;
 		int quantity;
 		for (int i = 0; i < layers; i ++) {
@@ -32,7 +31,6 @@ public class ContentsGenerator{
 			lists.add(list);  
 		}
 		
-		System.out.println("Making moss");
 		// Moss
 		quantity = ThreadLocalRandom.current().nextInt(5, 21);
 		System.out.println("Moss quan:" + quantity);
@@ -40,15 +38,13 @@ public class ContentsGenerator{
 			System.out.println("Adding Moss to layer");
 			lists.get(pickLayer()).add(new Moss());
 		}
-		
-		System.out.println("Making cracks");
+
 		// Cracks
 		quantity = ThreadLocalRandom.current().nextInt(5, 21);
 		for (int i = 0; i < quantity; i++) {
 			lists.get(pickLayer()).add(new Crack());
 		}
 		
-		System.out.println("Making torches right");
 		// Torches (right)
 		quantity = ThreadLocalRandom.current().nextInt(1, 5);
 		for (int i = 0; i < quantity; i++) {

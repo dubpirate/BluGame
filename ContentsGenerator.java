@@ -45,6 +45,18 @@ public class ContentsGenerator{
 			lists.get(pickLayer()).add(new Crack());
 		}
 		
+		// Rocks
+		quantity = ThreadLocalRandom.current().nextInt(5, 21);
+		for (int i = 0; i < quantity; i++) {
+			lists.get(pickLayer()).add(new Rock());
+		}
+		
+		// Rubble
+		quantity = ThreadLocalRandom.current().nextInt(5, 21);
+		for (int i = 0; i < quantity; i++) {
+			lists.get(pickLayer()).add(new Rubble());
+		}
+		
 		// Torches (right)
 		quantity = ThreadLocalRandom.current().nextInt(1, 5);
 		for (int i = 0; i < quantity; i++) {

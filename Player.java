@@ -5,6 +5,8 @@ import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import java.util.Random;
+
 
 public class Player {
 	private int x;
@@ -20,8 +22,11 @@ public class Player {
 		this.height = height;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
-		x = 3;
-		y = 2;
+		Random rand = new Random();
+		int  n = rand.nextInt(10) + 1;
+		x = n;
+		n = rand.nextInt(10) + 1;
+		y = n;
 		img = new Image("res/Sprites/Man1Front.png");
 	}
 	
@@ -51,20 +56,28 @@ public class Player {
 		while (Keyboard.next()) {
 		    if (Keyboard.getEventKeyState()) {
 		        if (Keyboard.getEventKey() == Keyboard.KEY_W) {
-		        y++;
-		        img = new Image("res/Sprites/Man1Back.png");
-		        
-		        } else if (Keyboard.getEventKey() == Keyboard.KEY_D) {
-			    x++;
-			    img = new Image("res/Sprites/Man1Side.png");
+					if (y < 10) {
+						y++;
+					}
+					img = new Image("res/Sprites/Man1Back.png");      
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_D) {
+					if (x < 10) {
+						x++;
+					}
+					img = new Image("res/Sprites/Man1Side.png");
 		        } else if (Keyboard.getEventKey() == Keyboard.KEY_S) {
-			    y--;
-			    img = new Image("res/Sprites/Man1Front.png");
-			    } else if (Keyboard.getEventKey() == Keyboard.KEY_A) {
-			    x--;
-			    img = new Image("res/Sprites/Man1Side.png");
-			    }
-		    }
+		        	if (y>1) {
+					    y--;
+					}
+					img = new Image("res/Sprites/Man1Front.png");
+				} else if (Keyboard.getEventKey() == Keyboard.KEY_A) {
+					if (x > 1) {
+						x--;
+					}
+
+					img = new Image("res/Sprites/Man1Side.png");
+				}
+			}
 		}
 	}
 }

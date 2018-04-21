@@ -1,4 +1,5 @@
 package Main;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,33 +24,35 @@ public class Layer {
 	private Texture tile;
 	private int drawSize;
 	private int height; // screen height
-	private int width; //  screen width
+	private int width; // screen width
 	private int menuWidth = 100;
 	private Texture bg;
 	private int level; // which layer in the stack is this
 	private ArrayList<? extends Item> items; // all the items in this layer
-	private Stairs stairsUp;    // Stairs objects
+	private Stairs stairsUp; // Stairs objects
 	private Stairs stairsDown; //
 	Map<String, Texture> bgTextures = new HashMap<String, Texture>();
-	private final String[] textures = { "botRight", "botWall", "Ground2", "leftWall", "rightWall", "topLeft", "topRight",
-			"topWall", "botLeft"};
+	private final String[] textures = { "botRight", "botWall", "Ground2", "leftWall", "rightWall", "topLeft",
+			"topRight", "topWall", "botLeft" };
 
-	Layer(Layer prev, int level, String tileFile, ArrayList<? extends Item> items, int width, int height) throws IOException {
+	Layer(Layer prev, int level, String tileFile, ArrayList<? extends Item> items, int width, int height)
+			throws IOException {
 		this.level = level;
 		this.items = items;
 		this.height = height;
 		this.width = width;
-		this.drawSize = height/2-menuWidth;
-		
+		this.drawSize = height / 2 - menuWidth;
+
 		if (prev != null) {
 			try {
-			stairsDown = new Stairs(prev.getStairsUp().getCoords(), "res/Layer" + level + "/Stairsdown", TILESIZEWIDTH, TILESIZEHEIGHT);
+				stairsDown = new Stairs(prev.getStairsUp().getCoords(), "res/Layer" + level + "/Stairsdown",
+						TILESIZEWIDTH, TILESIZEHEIGHT);
 			} catch (java.lang.NullPointerException e) {
 				System.out.println("Error loading stairs on Layer" + level);
 				e.printStackTrace();
 			}
 		}
-		
+
 		if (level != 5) {
 			stairsUp = newStairsUp();
 		}
@@ -63,53 +66,49 @@ public class Layer {
 	public int getLevel() {
 		return this.level;
 	}
-	
+
 	public Stairs getStairsUp() {
 		return this.stairsUp;
 	}
-	
+
 	public Stairs getStairsDown() {
 		return this.stairsDown;
 	}
-	
-	
+
 	/**
-	 * this method looks for a random place in the room to put the stairs.
-	 * First: Choose a random x, y between the bounds of the screen,
-	 * Second: make sure it doesn't overlap the other stairs or the items
-	 *  --( if it does, pick a different random x, y)
-	 * Third: return the random x,y
+	 * this method looks for a random place in the room to put the stairs. First:
+	 * Choose a random x, y between the bounds of the screen, Second: make sure it
+	 * doesn't overlap the other stairs or the items --( if it does, pick a
+	 * different random x, y) Third: return the random x,y
 	 */
-	
-	
+
 	public Stairs newStairsUp() {
 		int[] newStairs = new int[2];
 		boolean collision = true;
 		do {
 			collision = false;
-			newStairs[0] = ThreadLocalRandom.current().nextInt(1, 10)*TILESIZEWIDTH;
-			newStairs[1] = ThreadLocalRandom.current().nextInt(1, 10)*TILESIZEHEIGHT;
-			
+			newStairs[0] = ThreadLocalRandom.current().nextInt(1, 10) * TILESIZEWIDTH;
+			newStairs[1] = ThreadLocalRandom.current().nextInt(1, 10) * TILESIZEHEIGHT;
+
 			if (stairsDown.getCoords()[0] != newStairs[0] && stairsDown.getCoords()[1] != newStairs[1]) {
 				collision = true;
-			} else{
-			
-			// for (item in items)
+			} else {
+				// for (item in items)
 				// if collisions with x, y
-					// collision = true
-					// break;
+				// collision = true;
+				// break;
 				//
-			//
+				//
 			}
 		} while (collision);
-		
+
 		return new Stairs(newStairs, "res/Layer" + level + "/Stairsup", TILESIZEWIDTH, TILESIZEHEIGHT);
 	}
 
 	public void draw() throws SlickException {
-		drawLayer();     // first draw the floor and walls
-		drawStairs();   //  then the stairs
-		drawItems();   //   then the items
+		drawLayer(); // first draw the floor and walls
+		drawStairs(); // then the stairs
+		drawItems(); // then the items
 	}
 
 	private void drawLayer() throws SlickException {
@@ -118,7 +117,7 @@ public class Layer {
 
 		bgTextures.get("Ground2").bind();
 
-		for (int i = TILESIZEHEIGHT; i < height/2-TILESIZEHEIGHT/2; i += TILESIZEHEIGHT) {
+		for (int i = TILESIZEHEIGHT; i < height / 2 - TILESIZEHEIGHT / 2; i += TILESIZEHEIGHT) {
 			for (int j = TILESIZEWIDTH; j < drawSize; j += TILESIZEWIDTH) {
 				GL11.glBegin(GL11.GL_QUADS);
 
@@ -140,7 +139,7 @@ public class Layer {
 
 		bgTextures.get("leftWall").bind();
 
-		for (int i = TILESIZEHEIGHT; i < height/2-TILESIZEHEIGHT/3; i += TILESIZEHEIGHT) {
+		for (int i = TILESIZEHEIGHT; i < height / 2 - TILESIZEHEIGHT / 3; i += TILESIZEHEIGHT) {
 			GL11.glBegin(GL11.GL_QUADS);
 
 			GL11.glVertex2f(0, i);
@@ -160,19 +159,19 @@ public class Layer {
 
 		bgTextures.get("rightWall").bind();
 
-		for (int i = TILESIZEHEIGHT; i < height/2-TILESIZEHEIGHT/3; i += TILESIZEHEIGHT) {
+		for (int i = TILESIZEHEIGHT; i < height / 2 - TILESIZEHEIGHT / 3; i += TILESIZEHEIGHT) {
 			GL11.glBegin(GL11.GL_QUADS);
 
-			GL11.glVertex2f(drawSize-TILESIZEWIDTH/2, i);
+			GL11.glVertex2f(drawSize - TILESIZEWIDTH / 2, i);
 			GL11.glTexCoord2f(0, 0);
 
-			GL11.glVertex2f(drawSize-TILESIZEWIDTH/2, i + TILESIZEHEIGHT);
+			GL11.glVertex2f(drawSize - TILESIZEWIDTH / 2, i + TILESIZEHEIGHT);
 			GL11.glTexCoord2f(1, 0);
 
-			GL11.glVertex2f(drawSize-TILESIZEWIDTH/2 + TILESIZEWIDTH, i + TILESIZEHEIGHT);
+			GL11.glVertex2f(drawSize - TILESIZEWIDTH / 2 + TILESIZEWIDTH, i + TILESIZEHEIGHT);
 			GL11.glTexCoord2f(1, 1);
 
-			GL11.glVertex2f(drawSize-TILESIZEWIDTH/2 + TILESIZEWIDTH, i);
+			GL11.glVertex2f(drawSize - TILESIZEWIDTH / 2 + TILESIZEWIDTH, i);
 			GL11.glTexCoord2f(0, 1);
 
 			GL11.glEnd();
@@ -180,26 +179,26 @@ public class Layer {
 
 		bgTextures.get("topWall").bind();
 
-		for (int i = TILESIZEWIDTH; i < drawSize-TILESIZEWIDTH/2; i += TILESIZEWIDTH) {
+		for (int i = TILESIZEWIDTH; i < drawSize - TILESIZEWIDTH / 2; i += TILESIZEWIDTH) {
 			GL11.glBegin(GL11.GL_QUADS);
 
-			GL11.glVertex2f(i, height/2-TILESIZEHEIGHT/3);
+			GL11.glVertex2f(i, height / 2 - TILESIZEHEIGHT / 3);
 			GL11.glTexCoord2f(0, 0);
 
-			GL11.glVertex2f(i, height/2-TILESIZEHEIGHT/3 + TILESIZEHEIGHT);
+			GL11.glVertex2f(i, height / 2 - TILESIZEHEIGHT / 3 + TILESIZEHEIGHT);
 			GL11.glTexCoord2f(1, 0);
 
-			GL11.glVertex2f(i + TILESIZEWIDTH, height/2-TILESIZEHEIGHT/3 + TILESIZEHEIGHT);
+			GL11.glVertex2f(i + TILESIZEWIDTH, height / 2 - TILESIZEHEIGHT / 3 + TILESIZEHEIGHT);
 			GL11.glTexCoord2f(1, 1);
 
-			GL11.glVertex2f(i + TILESIZEWIDTH, height/2-TILESIZEHEIGHT/3);
+			GL11.glVertex2f(i + TILESIZEWIDTH, height / 2 - TILESIZEHEIGHT / 3);
 			GL11.glTexCoord2f(0, 1);
 
 			GL11.glEnd();
 		}
 		bgTextures.get("botWall").bind();
 
-		for (int i = TILESIZEWIDTH; i < drawSize-TILESIZEWIDTH/2; i += TILESIZEWIDTH) {
+		for (int i = TILESIZEWIDTH; i < drawSize - TILESIZEWIDTH / 2; i += TILESIZEWIDTH) {
 			GL11.glBegin(GL11.GL_QUADS);
 
 			GL11.glVertex2f(i, 0);
@@ -219,16 +218,16 @@ public class Layer {
 		bgTextures.get("topLeft").bind();
 		GL11.glBegin(GL11.GL_QUADS);
 
-		GL11.glVertex2f(0, height/2-TILESIZEHEIGHT/3);
+		GL11.glVertex2f(0, height / 2 - TILESIZEHEIGHT / 3);
 		GL11.glTexCoord2f(0, 0);
 
-		GL11.glVertex2f(0, height/2-TILESIZEHEIGHT/3 + TILESIZEHEIGHT);
+		GL11.glVertex2f(0, height / 2 - TILESIZEHEIGHT / 3 + TILESIZEHEIGHT);
 		GL11.glTexCoord2f(1, 0);
 
-		GL11.glVertex2f(0 + TILESIZEWIDTH, height/2-TILESIZEHEIGHT/3 + TILESIZEHEIGHT);
+		GL11.glVertex2f(0 + TILESIZEWIDTH, height / 2 - TILESIZEHEIGHT / 3 + TILESIZEHEIGHT);
 		GL11.glTexCoord2f(1, 1);
 
-		GL11.glVertex2f(0 + TILESIZEWIDTH, height/2-TILESIZEHEIGHT/3);
+		GL11.glVertex2f(0 + TILESIZEWIDTH, height / 2 - TILESIZEHEIGHT / 3);
 		GL11.glTexCoord2f(0, 1);
 
 		GL11.glEnd();
@@ -236,16 +235,16 @@ public class Layer {
 		bgTextures.get("topRight").bind();
 		GL11.glBegin(GL11.GL_QUADS);
 
-		GL11.glVertex2f(drawSize-TILESIZEWIDTH/2, height/2-TILESIZEHEIGHT/3);
+		GL11.glVertex2f(drawSize - TILESIZEWIDTH / 2, height / 2 - TILESIZEHEIGHT / 3);
 		GL11.glTexCoord2f(0, 0);
 
-		GL11.glVertex2f(drawSize-TILESIZEWIDTH/2, height/2-TILESIZEHEIGHT/3 + TILESIZEHEIGHT);
+		GL11.glVertex2f(drawSize - TILESIZEWIDTH / 2, height / 2 - TILESIZEHEIGHT / 3 + TILESIZEHEIGHT);
 		GL11.glTexCoord2f(1, 0);
 
-		GL11.glVertex2f(drawSize+TILESIZEWIDTH/2, height/2-TILESIZEHEIGHT/3 + TILESIZEHEIGHT);
+		GL11.glVertex2f(drawSize + TILESIZEWIDTH / 2, height / 2 - TILESIZEHEIGHT / 3 + TILESIZEHEIGHT);
 		GL11.glTexCoord2f(1, 1);
 
-		GL11.glVertex2f(drawSize+TILESIZEWIDTH/2, height/2-TILESIZEHEIGHT/3);
+		GL11.glVertex2f(drawSize + TILESIZEWIDTH / 2, height / 2 - TILESIZEHEIGHT / 3);
 		GL11.glTexCoord2f(0, 1);
 
 		GL11.glEnd();
@@ -266,24 +265,23 @@ public class Layer {
 		GL11.glTexCoord2f(0, 1);
 
 		GL11.glEnd();
-		
+
 		bgTextures.get("botRight").bind();
 		GL11.glBegin(GL11.GL_QUADS);
 
-		GL11.glVertex2f(drawSize-TILESIZEWIDTH/2, 0);
+		GL11.glVertex2f(drawSize - TILESIZEWIDTH / 2, 0);
 		GL11.glTexCoord2f(0, 0);
 
-		GL11.glVertex2f(drawSize-TILESIZEWIDTH/2, 0 + TILESIZEHEIGHT);
+		GL11.glVertex2f(drawSize - TILESIZEWIDTH / 2, 0 + TILESIZEHEIGHT);
 		GL11.glTexCoord2f(1, 0);
 
-		GL11.glVertex2f(drawSize+TILESIZEWIDTH/2, 0 + TILESIZEHEIGHT);
+		GL11.glVertex2f(drawSize + TILESIZEWIDTH / 2, 0 + TILESIZEHEIGHT);
 		GL11.glTexCoord2f(1, 1);
 
-		GL11.glVertex2f(drawSize+TILESIZEWIDTH/2, 0);
+		GL11.glVertex2f(drawSize + TILESIZEWIDTH / 2, 0);
 		GL11.glTexCoord2f(0, 1);
 
 		GL11.glEnd();
-	
 
 	}
 
@@ -292,14 +290,13 @@ public class Layer {
 		if (level != 1) {
 			stairsDown.draw();
 		}
-		
+
 		// this draws the stairs down, if there are any.
 		if (level != 5) {
 			stairsUp.draw();
 		}
-		
+
 	}
-	
 
 	private void drawItems() {
 

@@ -13,6 +13,9 @@ import org.newdawn.slick.util.ResourceLoader;
 
 import Aesthetic.*;
 import Interactable.Chest;
+import Interactable.Coin;
+import Interactable.Key;
+import Interactable.Onion;
 
 import org.lwjgl.opengl.GL11;
 
@@ -40,13 +43,13 @@ public class Layer {
 	private final String[] textures = { "botRight", "botWall", "Ground", "leftWall", "rightWall", "topLeft", "topRight",
 			"topWall", "botLeft" };
 
-	Layer(Layer prev, int level, String tileFile, ArrayList<Item> rawItems, int width, int height, int lay, Player player)
-			throws IOException {
+	Layer(Layer prev, int level, String tileFile, ArrayList<Item> rawItems, int width, int height, int lay,
+			Player player) throws IOException {
 		this.level = level;
 		this.lay = lay;
 		this.rawItem = rawItems;
 		this.height = height;
-		this.player=player;
+		this.player = player;
 		this.width = width;
 		this.drawSize = height / 2 - menuWidth;
 		this.tileFile = tileFile;
@@ -62,7 +65,7 @@ public class Layer {
 		}
 
 		initContents(rawItems);
-		
+
 		stairsUp = newStairsUp();
 
 		for (int i = 0; i < textures.length; i++) {
@@ -83,14 +86,43 @@ public class Layer {
 			}
 		}
 	}
-	
-	boolean checkPlayerCollision(int x,int y) {
-		int[] playerPos = {x,y};
+
+	boolean checkPlayerCollision(int x, int y) {
+		int[] playerPos = { x, y };
 		for (Item i : items) {
-			if (i.collidesWith(playerPos)&& ((i instanceof Rock) || (i instanceof Chest)))
+			if (i.collidesWith(playerPos) && ((i instanceof Rock) || (i instanceof Chest)))
 				return true;
 		}
 		return false;
+	}
+
+	boolean checkPlayerInteractable(int x, int y) {
+		int[] playerPos = { x, y };
+		for (Item i : items) {
+			if (i.collidesWith(playerPos) && ((i instanceof Key) || (i instanceof Coin) || (i instanceof Onion)))
+				return true;
+		}
+		return false;
+	}
+	
+	public void removeItem(Item i) {
+		items.remove(i);
+	}
+
+	Item checkItemToPickup(int x, int y) {
+		int[] playerPos = { x, y };
+		for (Item i : items) {
+			if (i.collidesWith(playerPos)&& ((i instanceof Key) || (i instanceof Coin) || (i instanceof Onion))) {
+				if (i instanceof Key) {
+					return i;
+				} else if (i instanceof Coin) {
+					return i;
+				} else if (i instanceof Onion) {
+					return i;
+				}
+			}
+		}
+		return null;
 	}
 
 	private boolean checkItemCollisions(Item item) {
@@ -98,7 +130,7 @@ public class Layer {
 			return true;
 		}
 		for (Item i : items) {
-			if (i.collidesWith(item.getCoords()) )
+			if (i.collidesWith(item.getCoords()))
 				return true;
 		}
 		return false;
@@ -333,7 +365,7 @@ public class Layer {
 		}
 
 		// this draws the stairs up, if there are any.
-		if (level != 24) {
+		if (level < 20) {
 			stairsUp.draw();
 		}
 

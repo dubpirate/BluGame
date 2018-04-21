@@ -33,7 +33,7 @@ public class Game {
 
 		Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 		Display.create();
-		
+
 		Game game = new Game();
 		while (!Display.isCloseRequested()) {
 			game.update();
@@ -43,25 +43,24 @@ public class Game {
 
 	public Game() throws IOException, SlickException {
 		intiGL();
-		int levels = 25;
-		
+		int levels = 20;
+
 		generateLayers(levels);
-		player = new Player(TILESIZEHEIGHT,TILESIZEWIDTH,WIDTH,HEIGHT, currentLayer);
-		eg=new EnemyGenerator(levels, player, TILESIZEWIDTH, TILESIZEHEIGHT, layers);
+		player = new Player(TILESIZEHEIGHT, TILESIZEWIDTH, WIDTH, HEIGHT, currentLayer, new ArrayList<Enemy>());
+		eg = new EnemyGenerator(levels, player, TILESIZEWIDTH, TILESIZEHEIGHT, layers);
 		sm = new SideMenu(3, WIDTH, HEIGHT);
 	}
 
 	public void update() throws SlickException, IOException {
 		clearGL();
 
-
-
 		if (timer > 0) {
 			timer--;
 		}
+		player.checkForInteractable();
 		currentLayer.draw();
-		if(player.move()) {
-			for(int i = 0;i < eg.getEnemies().size();i++) {
+		if (player.move()) {
+			for (int i = 0; i < eg.getEnemies().size(); i++) {
 				eg.getEnemies().get(i).move();
 			}
 		}
@@ -71,7 +70,7 @@ public class Game {
 			if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
 				if (timer == 0) {
 					currentLayer = layers.get(currentLayer.getLevel());
-					player.setCurrentLayer(layers.get(currentLayer.getLevel()-1));
+					player.setCurrentLayer(layers.get(currentLayer.getLevel() - 1));
 					timer = 100;
 				}
 			}
@@ -91,7 +90,7 @@ public class Game {
 		}
 
 		currentLayer.draw();
-		for(int i = 0;i<eg.getEnemies().size();i++) {
+		for (int i = 0; i < eg.getEnemies().size(); i++) {
 			eg.getEnemies().get(i).draw();
 		}
 		player.draw();
@@ -101,25 +100,24 @@ public class Game {
 
 	}
 
-	
 	private void generateLayers(int levels) throws IOException, SlickException {
-		ContentsGenerator gs = new ContentsGenerator(levels);
+		ContentGenerator gs = new ContentGenerator(levels);
 		Layer prev = null;
 		ArrayList<Item> contents = new ArrayList<Item>();
 		for (int i = 1; i <= levels; i++) {
-			if (i % 5 == 0 && i < 21) {
+			if (((i-1) % 5) == 0 && i < 21 && (i-1)!=0) {
 				layerNum++;
 			}
-			
-			
-			layers.add(new Layer(prev, i, "res/Layer", gs.getNextContents(), WIDTH, HEIGHT, layerNum,player));
 
-			prev = layers.get(i - 1);
+			layers.add(new Layer(prev, i, "res/Layer", gs.getNextContents(), WIDTH, HEIGHT, layerNum, player));
+			if (i != 0) {
+				prev = layers.get(i-1);
+			}
 		}
 		currentLayer = layers.get(0);
-		
+
 	}
-	
+
 	private void close() {
 		Display.destroy();
 		System.exit(0);

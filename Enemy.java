@@ -19,6 +19,7 @@ public class Enemy {
 	private int y;
 	private int tileWidth;
 	private int tileHeight;
+	private boolean dead = false;
 	Image img;
 
 	public Enemy( Player player, Layer currentLayer, int tileWidth, int tileHeight) throws SlickException {
@@ -49,6 +50,11 @@ public class Enemy {
 		}
 	}
 	
+	public void setDead() throws SlickException {
+		dead = true;
+		img = new Image("res/Sprites/ShadowDead.png");
+	}
+	
 	public void draw() {
 		if (currentLayer.getLevel()==player.getCurrentLayer().getLevel()) {
 			img.bind();
@@ -73,6 +79,9 @@ public class Enemy {
 	}
 	
 	public void move() throws SlickException {
+		if(dead) {
+			return;
+		}
 		if (currentLayer.getLevel()==player.getCurrentLayer().getLevel()) {
 			int dx = x - player.getX();
 			int dy = y - player.getY();
@@ -129,5 +138,17 @@ public class Enemy {
 				}
 			}
 		}
+	}
+	
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
+	}
+	
+	public Layer getLayer() {
+		return currentLayer;
 	}
 }

@@ -29,6 +29,7 @@ public class EnemyGenerator {
 			Layer currentLayer = layers.get(layer);
 			enemies.add(new Enemy(player,currentLayer,tileWidth, tileHeight));
 		}
+		player.setEnemyList(enemies);
 	}
 	
 	

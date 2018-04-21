@@ -21,53 +21,51 @@ public class ContentGenerator{
 	 * */
 	private void makeAll(int layers) {
 		ArrayList<Item> list;
+		int l;
 		int quantity;
 		for (int i = 0; i < layers; i ++) {
-			System.out.println("making layer arraysl");
 			list = new ArrayList<Item>();
 			lists.add(list);  
+			
 		}
 		
 		// Moss
-		quantity = ThreadLocalRandom.current().nextInt(5, 21);
-		System.out.println("Moss quan:" + quantity);
+		quantity = ThreadLocalRandom.current().nextInt(layers, layers*4);
 		for (int i = 0; i < quantity; i++) {
-			System.out.println("Adding Moss to layer");
-			lists.get(pickLayer()).add(new Moss());
+			do {
+				l = pickLayer();
+			}while(l <9 && l>=4);
+			lists.get(l).add(new Moss());
 		}
 		
 		// Rubble
-		quantity = ThreadLocalRandom.current().nextInt(5, 21);
-		System.out.println("Moss quan:" + quantity);
+		quantity = ThreadLocalRandom.current().nextInt(layers, layers*4);
 		for (int i = 0; i < quantity; i++) {
-			System.out.println("Adding Moss to layer");
 			lists.get(pickLayer()).add(new Rubble());
 		}
 
 		
 		// Rock
-		quantity = ThreadLocalRandom.current().nextInt(5, 10);
-		System.out.println("Moss quan:" + quantity);
+		quantity = ThreadLocalRandom.current().nextInt(layers, layers*2);
 		for (int i = 0; i < quantity; i++) {
-			System.out.println("Adding Moss to layer");
 			lists.get(pickLayer()).add(new Rock());
 		}
 
 
 		// Cracks
-		quantity = ThreadLocalRandom.current().nextInt(5, 21);
+		quantity = ThreadLocalRandom.current().nextInt(layers, layers*4);
 		for (int i = 0; i < quantity; i++) {
 			lists.get(pickLayer()).add(new Crack());
 		}
 		
 		// Torches (right)
-		quantity = ThreadLocalRandom.current().nextInt(10, 21);
+		quantity = ThreadLocalRandom.current().nextInt(layers, layers*2);
 		for (int i = 0; i < quantity; i++) {
 			lists.get(pickLayer()).add(new Torch("right"));
 		}
 		
 		// Torches (left)
-		quantity = ThreadLocalRandom.current().nextInt(10,21);
+		quantity = ThreadLocalRandom.current().nextInt(layers,layers*2);
 		for (int i = 0; i < quantity; i++) {
 			lists.get(pickLayer()).add(new Torch("left"));
 		}
@@ -78,13 +76,25 @@ public class ContentGenerator{
 			lists.get(pickLayer()).add(new Chest(i));
 			lists.get(pickLayer()).add(new Key(i));
 		}
+		
+		// Money
+		quantity = ThreadLocalRandom.current().nextInt(layers/4, layers/2);
+		for (int i = 0; i < quantity; i++) {
+			lists.get(pickLayer()).add(new Coin(i));
+		}
+				
+		// Onion
+		quantity = ThreadLocalRandom.current().nextInt(1, 2);
+		for (int i = 0; i < quantity; i++) {
+			lists.get(19).add(new Onion());
+		}
 	}
 	
 	private int pickLayer() {
 		int choice;
 		do {
-			choice = ThreadLocalRandom.current().nextInt(0, 25);
-		} while (lists.get(choice).size() > 25);
+			choice = ThreadLocalRandom.current().nextInt(0, 20); //picks a random layer to put each item
+		} while (lists.get(choice).size() > 20);
 		return choice;
 	}
 	

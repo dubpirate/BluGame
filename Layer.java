@@ -26,6 +26,7 @@ public class Layer {
 	private int width; // screen width
 	private int menuWidth = 100;
 	private Texture bg;
+	private Texture t;
 	private int level; // which layer in the stack is this
 	private ArrayList<? extends Item> items; // all the items in this layer
 	private Stairs stairsUp; // Stairs objects
@@ -34,7 +35,7 @@ public class Layer {
 	private int lay;
 	Map<String, Texture> bgTextures = new HashMap<String, Texture>();
 	private final String[] textures = { "botRight", "botWall", "Ground", "leftWall", "rightWall", "topLeft", "topRight",
-			"topWall", "botLeft" };
+			"topWall", "botLeft"};
 
 	Layer(Layer prev, int level, String tileFile, ArrayList<? extends Item> items, int width, int height, int lay)
 			throws IOException {
@@ -55,7 +56,8 @@ public class Layer {
 				e.printStackTrace();
 			}
 		}
-
+		t = TextureLoader.getTexture("PNG",
+				ResourceLoader.getResourceAsStream("res/Aesthetic/rightTorch.png"));
 		stairsUp = newStairsUp();
 
 		for (int i = 0; i < textures.length; i++) {
@@ -282,6 +284,23 @@ public class Layer {
 		GL11.glTexCoord2f(1, 1);
 
 		GL11.glVertex2f(drawSize + TILESIZEWIDTH / 2, 0);
+		GL11.glTexCoord2f(0, 1);
+
+		GL11.glEnd();
+		
+		t.bind();
+		GL11.glBegin(GL11.GL_QUADS);
+
+		GL11.glVertex2f(drawSize - TILESIZEWIDTH / 2, TILESIZEHEIGHT);
+		GL11.glTexCoord2f(0, 0);
+
+		GL11.glVertex2f(drawSize - TILESIZEWIDTH / 2, TILESIZEHEIGHT + TILESIZEHEIGHT);
+		GL11.glTexCoord2f(1, 0);
+
+		GL11.glVertex2f(drawSize + TILESIZEWIDTH / 2, TILESIZEHEIGHT + TILESIZEHEIGHT);
+		GL11.glTexCoord2f(1, 1);
+
+		GL11.glVertex2f(drawSize + TILESIZEWIDTH / 2, TILESIZEHEIGHT);
 		GL11.glTexCoord2f(0, 1);
 
 		GL11.glEnd();

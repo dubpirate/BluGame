@@ -1,3 +1,5 @@
+package Main;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -20,9 +22,9 @@ public class Game{
 	private static final int HEIGHT = 960; //  960
 	private static ArrayList<Layer> layers = new ArrayList<Layer>();
 	private static Layer currentLayer;
-	private final String[] textures = {"res/Layer1/"};
+	private Player player; 
 	
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws SlickException, Exception {
 
 		Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 		Display.create();
@@ -33,24 +35,29 @@ public class Game{
 		game.close();
 	}
 
-	public Game() throws IOException {
+	public Game() throws IOException, SlickException {
 		intiGL();
 		generateLayers();
+		player = new Player(TILESIZEHEIGHT,TILESIZEWIDTH,WIDTH,HEIGHT);
 	}
 	
-	public void update() {
+	public void update() throws SlickException {
 		clearGL();
 		
 		//inputs(new Input(HEIGHT));
 		
 		currentLayer.draw();
+		player.move();
+		player.draw();
 		
 		Display.update();
 	}
 	
 	private void generateLayers() throws IOException {
-		for (int i = 0; i < textures.length; i ++) {	
-			layers.add(new Layer(i, textures[i], null, WIDTH, HEIGHT));
+		Layer prev = null;
+		for (int i = 1; i <= 5; i ++) {	
+			layers.add(new Layer(prev, i, "res/Layer"+i+"/", null, WIDTH, HEIGHT));
+			prev = layers.get(i-1);
 		}
 		currentLayer = layers.get(0);
 	}

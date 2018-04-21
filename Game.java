@@ -1,15 +1,18 @@
 package Main;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
+
+import Items.*;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -25,6 +28,7 @@ public class Game{
 	private static ArrayList<Layer> layers = new ArrayList<Layer>();
 	private static Layer currentLayer;
 	private Player player; 
+	private SideMenu sm;
 	private int timer = 0;
 	
 	public static void main(String[] args) throws SlickException, Exception {
@@ -40,18 +44,29 @@ public class Game{
 
 	public Game() throws IOException, SlickException {
 		intiGL();
+		
 		generateLayers();
-		player = new Player(TILESIZEHEIGHT,TILESIZEWIDTH,WIDTH,HEIGHT,currentLayer);
+
+		
+		sm = new SideMenu(3,WIDTH,HEIGHT);
 	}
 	
-	public void update() throws SlickException, InterruptedException {
+	public void update() throws SlickException {
 		clearGL();
-		//inputs(new Input(HEIGHT));
+		
 		if (timer>0) {
 			timer--;
 		}
 		currentLayer.draw();
-		player.move();
+		if(player.move()) {
+			for (int i=0; i<currentLayer.getContents().size(); i++) {
+				if (currentLayer.getContents().get(i) instanceof Enemy) {
+					((Enemy) currentLayer.getContents().get(i)).move();
+
+				}
+				
+			}
+		}
 		int[] stairsUp = currentLayer.getStairsUp().getCoords();
 		if (stairsUp[0] / TILESIZEWIDTH == player.getX() && stairsUp[1] / TILESIZEHEIGHT == player.getY()) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
@@ -75,19 +90,28 @@ public class Game{
 				}
 			}
 		}
-		
+		for (int i = 0; i < currentLayer.getContents().size(); i++) {
+			if (currentLayer.getContents().get(i) instanceof Enemy) {
+				((Enemy) currentLayer.getContents().get(i)).draw();
+			}
+		}
 		player.draw();
-		
+		sm.draw();
 		Display.update();
 	}
-	
-	private void generateLayers() throws IOException {
+
+	private void generateLayers() throws IOException, SlickException {
+		ArrayList<Item> contents= new ArrayList<Item>();
 		Layer prev = null;
-		for (int i = 1; i <= 5; i ++) {	
-			layers.add(new Layer(prev, i, "res/Layer"+i+"/", null, WIDTH, HEIGHT));
+		for (int i = 1; i <= 5; i ++) {		
+			layers.add(new Layer(prev, i, "res/Layer"+i+"/", contents, WIDTH, HEIGHT));
 			prev = layers.get(i-1);
 		}
-		currentLayer = layers.get(0);
+		currentLayer = layers.get(0);	
+		player = new Player(TILESIZEHEIGHT,TILESIZEWIDTH,WIDTH,HEIGHT, currentLayer);
+		int[] coords= {ThreadLocalRandom.current().nextInt(1, 10) * TILESIZEWIDTH,ThreadLocalRandom.current().nextInt(1, 10) * TILESIZEHEIGHT};
+		Item n = new Enemy("res/Sprites/ShadowFront.png", coords, player, currentLayer);
+		contents.add(n);
 	}
 	
 	private void inputs(Input input) {

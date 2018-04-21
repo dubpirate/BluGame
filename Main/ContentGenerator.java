@@ -21,6 +21,7 @@ public class ContentGenerator{
 		ArrayList<Item> list;
 		int l;
 		int quantity;
+		int bonus;
 		for (int i = 0; i < levels; i ++) {
 			list = new ArrayList<Item>();
 			lists.add(list);  
@@ -69,9 +70,10 @@ public class ContentGenerator{
 		}
 		
 		// Chests and Keys
-		quantity = ThreadLocalRandom.current().nextInt(10, 11);
+		quantity = ThreadLocalRandom.current().nextInt(10, 21);
+		bonus    = ThreadLocalRandom.current().nextInt(0, 3);
 		for (int i = 0; i < quantity; i++) {
-			lists.get(pickLayer(levels-1)+1).add(new Chest(i));
+			lists.get(pickLayer(levels-bonus)+bonus).add(new Chest(i));
 			lists.get(pickLayer(levels-1)+1).add(new Key(i));
 		}
 		

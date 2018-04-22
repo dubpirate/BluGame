@@ -4,6 +4,9 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.openal.Audio;
+import org.newdawn.slick.openal.AudioLoader;
+import org.newdawn.slick.util.ResourceLoader;
 
 import Interactable.Chest;
 import Interactable.Coin;
@@ -11,6 +14,7 @@ import Interactable.Key;
 import Interactable.Onion;
 import Items.Item;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -28,9 +32,11 @@ public class Player {
 	private ArrayList<Enemy> enemyList;
 	private boolean dead = false;
 	private boolean hasOnion = false;
+	private Audio hitSound;
+	private Audio dyingSound;
+	private Audio interactSound;
 
-	public Player(int tileHeight, int tileWidth, Layer currentLayer, ArrayList<Enemy> enemyList)
-			throws SlickException {
+	public Player(int tileHeight, int tileWidth, Layer currentLayer, ArrayList<Enemy> enemyList) throws SlickException {
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
 		this.enemyList = enemyList;
@@ -41,6 +47,14 @@ public class Player {
 		y = n;
 		img = new Image("res/Sprites/Man2Front.png");
 		this.currentLayer = currentLayer;
+
+		try {
+			hitSound = AudioLoader.getAudio("WAV", ResourceLoader.getResourceAsStream("res/SoundEffects/Hit.wav"));
+			dyingSound = AudioLoader.getAudio("WAV", ResourceLoader.getResourceAsStream("res/SoundEffects/Dying.wav"));
+			interactSound = AudioLoader.getAudio("WAV", ResourceLoader.getResourceAsStream("res/SoundEffects/Interact.wav"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void setCurrentLayer(Layer layer) {
@@ -53,10 +67,11 @@ public class Player {
 
 	public void setHealth(int modifier) {
 		health = health + modifier;
-		 if (health>3) {
-			 health=3;
-		 }
+		if (health > 3) {
+			health = 3;
+		}
 		if (health <= 0) {
+			dyingSound.playAsSoundEffect(1.0f, 1.0f, false);
 			dead = true;
 		}
 	}
@@ -81,14 +96,14 @@ public class Player {
 
 		GL11.glEnd();
 	}
-	
+
 	private void setFacing(String direction, Boolean bloody) {
 		currentDirection = direction;
 		try {
-			if (bloody){
-				img = new Image("res/Sprites/Hit"+direction+".png");
+			if (bloody) {
+				img = new Image("res/Sprites/Hit" + direction + ".png");
 			} else {
-				img = new Image("res/Sprites/Man2"+direction+".png");
+				img = new Image("res/Sprites/Man2" + direction + ".png");
 			}
 		} catch (SlickException e) {
 			System.out.println("Can't setFacing!");
@@ -101,7 +116,7 @@ public class Player {
 			img = new Image("res/Sprites/Man2Dead.png");
 			return false;
 		}
-		
+
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
 				if (Keyboard.getEventKey() == Keyboard.KEY_W) {
@@ -144,14 +159,16 @@ public class Player {
 		for (Enemy e : enemyList) {
 			if (e.getX() == x && e.getY() == y && e.getLayer().getLevel() == currentLayer.getLevel()) {
 				e.setDead();
+				hitSound.playAsSoundEffect(1.0f, 1.0f, false);
 			}
 		}
 
 	}
-	
-	public void hugged(){
+
+	public void hugged() {
 		setHealth(-1);
 		setFacing(currentDirection, true);
+		hitSound.playAsSoundEffect(1.0f, 1.0f, false);
 	}
 
 	public void checkForInteractable() throws SlickException {
@@ -161,6 +178,7 @@ public class Player {
 
 				if (currentLayer.checkPlayerInteractable(x * tileWidth, y * tileHeight)) {
 					i = currentLayer.checkItemToPickup(x * tileWidth, y * tileHeight);
+					interactSound.playAsSoundEffect(1.0f, 1.0f, false);
 				}
 
 				if (i == null) {
@@ -174,6 +192,7 @@ public class Player {
 								currentLayer.removeItem(i);
 								inventory.remove(item);
 								currentLayer.getContents().add(newChest);
+								
 								break;
 							}
 						}
@@ -181,24 +200,24 @@ public class Player {
 				} else {
 					inventory.add(i);
 					if (i instanceof Onion) {
-						hasOnion=true;
+						hasOnion = true;
 					}
 					currentLayer.removeItem(i);
 				}
 			}
 		}
 	}
-	
+
 	private void randomBonus() {
-		int c = ThreadLocalRandom.current().nextInt(0,3);
-		switch (c){
-			case 0:
-			case 1:
-				health++;
-				break;
-			case 2:
-				inventory.add(new Coin());
-				break;
+		int c = ThreadLocalRandom.current().nextInt(0, 3);
+		switch (c) {
+		case 0:
+		case 1:
+			health++;
+			break;
+		case 2:
+			inventory.add(new Coin());
+			break;
 		}
 	}
 
@@ -229,9 +248,8 @@ public class Player {
 	public int getHealth() {
 		return health;
 	}
-	
+
 	public boolean getHasOnion() {
 		return hasOnion;
 	}
 }
-

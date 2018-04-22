@@ -66,7 +66,7 @@ public class Player {
 		enemyList = enemies;
 	}
 
-	public void setHealth(int modifier) {
+	public void setHealth(int modifier) throws IOException, SlickException {
 		health = health + modifier;
 		if (health > 3) {
 			health = 3;
@@ -74,6 +74,7 @@ public class Player {
 		if (health <= 0) {
 			dyingSound.playAsSoundEffect(1.0f, 1.0f, false);
 			dead = true;
+			new Game();
 		}
 	}
 
@@ -112,7 +113,7 @@ public class Player {
 		}
 	}
 
-	public boolean move() throws SlickException {
+	public boolean move() throws SlickException, IOException {
 		if (dead) {
 			img = new Image("res/Sprites/Man2Dead.png");
 			return false;
@@ -160,7 +161,7 @@ public class Player {
 		return false;
 	}
 	
-	private void trapCheck() {
+	private void trapCheck() throws IOException, SlickException {
 		for (Item i : currentLayer.getContents()){
 			if (i instanceof Trap) {
 				if (i.getCoords()[0] == x*tileWidth && i.getCoords()[1] == y*tileHeight){
@@ -183,7 +184,7 @@ public class Player {
 
 	}
 
-	public void hugged() {
+	public void hugged() throws IOException, SlickException {
 		setHealth(-1);
 		setFacing(currentDirection, true);
 		hitSound.playAsSoundEffect(1.0f, 1.0f, false);

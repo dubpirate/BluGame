@@ -26,8 +26,8 @@ public class ContentGenerator{
 			list = new ArrayList<Item>();
 			lists.add(list);  
 			
-		}
-		
+    }
+    
 		// Traps (no homo)
 		quantity = ThreadLocalRandom.current().nextInt(1, 8);
 		for (int i = 0; i < quantity; i++) {
@@ -51,7 +51,6 @@ public class ContentGenerator{
 		for (int i = 0; i < quantity; i++) {
 			lists.get(pickLayer(levels)).add(new Rubble());
 		}
-
 		
 		// Rock
 		quantity = ThreadLocalRandom.current().nextInt(levels, levels*4);
@@ -59,14 +58,11 @@ public class ContentGenerator{
 			lists.get(pickLayer(levels)).add(new Rock());
 		}
 
-
 		// Cracks
 		quantity = ThreadLocalRandom.current().nextInt(levels, levels*4);
 		for (int i = 0; i < quantity; i++) {
 			lists.get(pickLayer(levels)).add(new Crack());
 		}
-		
-		
 		
 		// Torches (right)
 		quantity = ThreadLocalRandom.current().nextInt(levels, levels*4);

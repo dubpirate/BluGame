@@ -16,7 +16,6 @@ import Interactable.Chest;
 import Interactable.Coin;
 import Interactable.Key;
 import Interactable.Onion;
-import Interactable.Trap;
 
 import org.lwjgl.opengl.GL11;
 
@@ -69,13 +68,27 @@ public class Layer {
 	}
 
     private void initContents(ArrayList<Item> c) {
+    	int repeat = 0;
+    	ArrayList<Item> scraps = new ArrayList<Item>();
         for (Item i : c) {
+        	repeat = 0;
             if (i.getCoords() == null) {
                 do {
+                	repeat ++;
                     i.setCoords(i.genNewCoords());
+                    System.out.println("pussy");
+                    if (repeat > 5) {
+                    	scraps.add(i);
+                    	break;
+                    }
                 } while (checkItemCollisions(i) || chestCheck(i));
-                this.items.add(i);
+                if (repeat < 5)
+                	this.items.add(i);
             }
+        }
+        
+        for (Item s : scraps) {
+        	this.items.remove(s);
         }
     }
     
@@ -83,7 +96,7 @@ public class Layer {
         if (!(i instanceof Chest) )
             return false;
         
-        if (i.getCoords()[1] <= TILESIZEHEIGHT*2)
+        if (i.getCoords()[1] == TILESIZEHEIGHT*2)
             return true;
         
         int[] c = i.getCoords();
@@ -105,7 +118,7 @@ public class Layer {
 	boolean checkPlayerInteractable(int x, int y) {
 		int[] playerPos = { x, y };
 		for (Item i : items) {
-			if (i.collidesWith(playerPos) && ((i instanceof Trap) ||(i instanceof Key) || (i instanceof Coin) || (i instanceof Onion)))
+			if (i.collidesWith(playerPos) && ((i instanceof Key) || (i instanceof Coin) || (i instanceof Onion)))
 				return true;
 		}
 		return false;
@@ -119,7 +132,7 @@ public class Layer {
 		int[] playerPos = { x, y };
 		for (Item i : items) {
 			if (i.collidesWith(playerPos)
-					&& ( (i instanceof Trap) || (i instanceof Chest) || (i instanceof Key) || (i instanceof Coin) || (i instanceof Onion))) {
+					&& ((i instanceof Chest) || (i instanceof Key) || (i instanceof Coin) || (i instanceof Onion))) {
 				return i;
 			}
 		}

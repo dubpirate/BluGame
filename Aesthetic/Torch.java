@@ -20,15 +20,14 @@ public class Torch extends Aesthetic {
 		int[] c = new int[2];
 		x=(int) (Math.random()*9);
 	    x+=(x%2==0?1:0);
-	    System.out.println(x);
+	    //System.out.println(x);
 		if (type.equals("left"))
-        {
-			
+        {			
         	c[0] = 0;
         	c[1] = x*48;
         } else {
         	c[0] = 9*38+18;
-        	c[1] = x*48;
+        	c[1] = x*48+18;
         }
 		
 		return c;

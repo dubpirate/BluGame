@@ -28,6 +28,15 @@ public class ContentGenerator{
 			
 		}
 		
+		// Traps (no homo)
+		quantity = ThreadLocalRandom.current().nextInt(1, 3);
+		for (int i = 0; i < quantity; i++) {
+			do {
+				l = pickLayer(levels-(levels-4));
+			} while(l >= 15);
+			lists.get(l).add(new Trap());
+		}
+		
 		// Moss
 		quantity = ThreadLocalRandom.current().nextInt(levels, levels*4);
 		for (int i = 0; i < quantity; i++) {
@@ -56,6 +65,8 @@ public class ContentGenerator{
 		for (int i = 0; i < quantity; i++) {
 			lists.get(pickLayer(levels)).add(new Crack());
 		}
+		
+		
 		
 		// Torches (right)
 		quantity = ThreadLocalRandom.current().nextInt(levels, levels*4);

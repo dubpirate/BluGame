@@ -9,6 +9,7 @@ import org.newdawn.slick.SlickException;
 
 import Aesthetic.Rock;
 import Interactable.Chest;
+import Interactable.Trap;
 import Items.Item;
 
 public class Enemy {
@@ -98,6 +99,19 @@ public class Enemy {
 		}	
 	}
 	
+	private void trapCheck() throws IOException, SlickException {
+		for (Item i : currentLayer.getContents()){
+			if (i instanceof Trap) {
+				if (i.getCoords()[0] == x*tileWidth && i.getCoords()[1] == y*tileHeight){
+					if (!((Trap) i).getTripped()){
+						setDead();
+						((Trap) i).trip();
+					}
+				}
+			}
+		}
+	}
+	
 	public void move() throws SlickException, IOException {
 		if(dead) {
 			return;
@@ -153,6 +167,11 @@ public class Enemy {
 					setFacing("Left", false);
 				}
 			}
+		}
+		try {
+			trapCheck();
+		} catch (SlickException e) {
+			e.printStackTrace();
 		}
 	}
 	

@@ -2,8 +2,6 @@ package Main;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -11,11 +9,8 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.openal.Audio;
-import org.newdawn.slick.openal.AudioLoader;
 import org.newdawn.slick.openal.SoundStore;
 import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.util.ResourceLoader;
 
 public class Game {
 
@@ -37,6 +32,7 @@ public class Game {
 	private boolean mouseButton1 = false;
 	private Image bg;
 	private TitleScreen ts;
+	private boolean reset = false;
 
 	public static void main(String[] args) throws SlickException, Exception {
 
@@ -45,6 +41,9 @@ public class Game {
 
 		Game game = new Game();
 		while (!Display.isCloseRequested()) {
+			if(game.reset){
+				game = new Game();
+			}
 			game.update();
 		}
 		game.close();
@@ -77,7 +76,7 @@ public class Game {
 			player = new Player(TILESIZEHEIGHT, TILESIZEWIDTH, currentLayer, new ArrayList<Enemy>());
 		} while (currentLayer.checkPlayerCollision(player.getX() * TILESIZEWIDTH, player.getY() * TILESIZEHEIGHT));
 
-		eg = new EnemyGenerator(levels, player, TILESIZEWIDTH, TILESIZEHEIGHT, layers);
+		eg = new EnemyGenerator(player, TILESIZEWIDTH, TILESIZEHEIGHT, layers);
 		sm = new SideMenu(3, HEIGHT);
 	}
 
@@ -168,16 +167,16 @@ public class Game {
 				}
 				win();
 				if (timer2 == 0) {
-					close();
+					reset = true;
 				}
 			} else if (player.getDead()) {
 				if (timerSet) {
-					timer2 = 2000;
+					timer2 = 500;
 					timerSet = false;
 				}
 				lose();
 				if (timer2 == 0) {
-					close();
+					reset = true;
 				}
 			}
 

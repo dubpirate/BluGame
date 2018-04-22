@@ -68,13 +68,10 @@ public class Player {
 
 	public void setHealth(int modifier) throws IOException, SlickException {
 		health = health + modifier;
-		if (health > 3) {
-			health = 3;
-		}
 		if (health <= 0) {
 			dyingSound.playAsSoundEffect(1.0f, 1.0f, false);
 			dead = true;
-			new Game();
+			
 		}
 	}
 
@@ -167,6 +164,7 @@ public class Player {
 				if (i.getCoords()[0] == x*tileWidth && i.getCoords()[1] == y*tileHeight){
 					if (!((Trap) i).getTripped()){
 						hugged();
+						hitSound.playAsSoundEffect(1.0f, 1.0f, false);
 						((Trap) i).trip();
 					}
 				}
@@ -176,7 +174,7 @@ public class Player {
 
 	public void enemyAttack(int x, int y) throws SlickException {
 		for (Enemy e : enemyList) {
-			if (e.getX() == x && e.getY() == y && e.getLayer().getLevel() == currentLayer.getLevel()) {
+			if (e.getX() == x && e.getY() == y && e.getLayer().getLevel() == currentLayer.getLevel() && !e.getDead()) {
 				e.setDead();
 				hitSound.playAsSoundEffect(1.0f, 1.0f, false);
 			}

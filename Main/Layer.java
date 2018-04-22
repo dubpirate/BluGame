@@ -68,13 +68,27 @@ public class Layer {
 	}
 
     private void initContents(ArrayList<Item> c) {
+    	int repeat = 0;
+    	ArrayList<Item> scraps = new ArrayList<Item>();
         for (Item i : c) {
+        	repeat = 0;
             if (i.getCoords() == null) {
                 do {
+                	repeat ++;
                     i.setCoords(i.genNewCoords());
+                    System.out.println("pussy");
+                    if (repeat > 5) {
+                    	scraps.add(i);
+                    	break;
+                    }
                 } while (checkItemCollisions(i) || chestCheck(i));
-                this.items.add(i);
+                if (repeat < 5)
+                	this.items.add(i);
             }
+        }
+        
+        for (Item s : scraps) {
+        	this.items.remove(s);
         }
     }
     

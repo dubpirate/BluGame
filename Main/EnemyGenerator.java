@@ -10,11 +10,9 @@ public class EnemyGenerator {
 	private int tileHeight;
 	private int tileWidth;
 	private Player player;
-	private int levels;
 	private ArrayList<Layer> layers;
 	
-	public EnemyGenerator(int levels, Player player, int tileWidth, int tileHeight, ArrayList<Layer> layers) throws SlickException {
-		this.levels = levels;
+	public EnemyGenerator(Player player, int tileWidth, int tileHeight, ArrayList<Layer> layers) throws SlickException {
 		this.player = player;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;

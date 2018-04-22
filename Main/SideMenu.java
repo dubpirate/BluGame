@@ -5,6 +5,9 @@ import java.io.IOException;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
+import org.newdawn.slick.util.ResourceLoader;
 
 import Interactable.*;
 import Items.Item;
@@ -17,23 +20,29 @@ public class SideMenu {
 	private int minX;
 
 	int health;
-	Image heart;
-	Image heartEmpty;
-	Image bg;
+	Texture heart;
+	Texture heartEmpty;
+	Texture bg;
 	int layer;
 
-	SideMenu(int health, int height) throws SlickException {
+	SideMenu(int health, int height) {
 		this.health = health;
 		this.height = height;
 		this.minX = height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3;
-		bg = new Image("res/Layer1/Side.png");
-		heart = new Image("res/SideMenu/Heart.png");
-		heartEmpty = new Image("res/SideMenu/EmptyHeart.png");
+		try {
+			bg = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/Layer1/Side.png"));
+			heart = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/SideMenu/Heart.png"));
+			heartEmpty = TextureLoader.getTexture("PNG",
+					ResourceLoader.getResourceAsStream("res/SideMenu/EmptyHeart.png"));
+		} catch (IOException e) {
+			System.out.println("Could not find Stairs textures!");
+			e.printStackTrace();
+		}
 	}
 
 	public void draw(Player player, int layer) throws IOException, SlickException {
 		GL11.glColor3f(1, 1, 1);
-		bg = new Image("res/Layer" + layer + "/Side.png");
+		bg = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/Layer" + layer + "/Side.png"));
 		bg.bind();
 		for (int i = 0; i < height; i += TILESIZEHEIGHT) {
 			for (int j = 0; j < 4; j++) {

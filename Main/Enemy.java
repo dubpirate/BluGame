@@ -1,5 +1,6 @@
 package Main;
 
+import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.lwjgl.opengl.GL11;
@@ -97,7 +98,7 @@ public class Enemy {
 		}	
 	}
 	
-	public void move() throws SlickException {
+	public void move() throws SlickException, IOException {
 		if(dead) {
 			return;
 		}
@@ -155,7 +156,7 @@ public class Enemy {
 		}
 	}
 	
-	public void hug() {
+	public void hug() throws IOException, SlickException {
 		player.hugged();
 	}
 	

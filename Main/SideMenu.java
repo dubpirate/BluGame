@@ -20,29 +20,23 @@ public class SideMenu {
 	private int minX;
 
 	int health;
-	Texture heart;
-	Texture heartEmpty;
-	Texture bg;
+	Image heart;
+	Image heartEmpty;
+	Image bg;
 	int layer;
 
-	SideMenu(int health, int height) {
+	SideMenu(int health, int height) throws SlickException {
 		this.health = health;
 		this.height = height;
 		this.minX = height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3;
-		try {
-			bg = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/Layer1/Side.png"));
-			heart = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/SideMenu/Heart.png"));
-			heartEmpty = TextureLoader.getTexture("PNG",
-					ResourceLoader.getResourceAsStream("res/SideMenu/EmptyHeart.png"));
-		} catch (IOException e) {
-			System.out.println("Could not find Stairs textures!");
-			e.printStackTrace();
-		}
+		bg = new Image("res/Layer1/Side.png");
+		heart = new Image("res/SideMenu/Heart.png");
+		heartEmpty = new Image("res/SideMenu/EmptyHeart.png");
 	}
 
 	public void draw(Player player, int layer) throws IOException, SlickException {
 		GL11.glColor3f(1, 1, 1);
-		bg = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/Layer" + layer + "/Side.png"));
+		bg = new Image("res/Layer" + layer + "/Side.png");
 		bg.bind();
 		for (int i = 0; i < height; i += TILESIZEHEIGHT) {
 			for (int j = 0; j < 4; j++) {

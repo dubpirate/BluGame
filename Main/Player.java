@@ -83,6 +83,7 @@ public class Player {
 	}
 	
 	private void setFacing(String direction, Boolean bloody) {
+		currentDirection = direction;
 		try {
 			if (bloody){
 				img = new Image("res/Sprites/Hit"+direction+".png");
@@ -108,7 +109,6 @@ public class Player {
 						y++;
 					}
 					enemyAttack(x, y);
-					currentDirection = "back";
 					setFacing("back", false);
 					return true;
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_D) {
@@ -117,7 +117,6 @@ public class Player {
 
 					}
 					enemyAttack(x, y);
-					currentDirection = "right";
 					setFacing("right", false);
 					return true;
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_S) {
@@ -125,7 +124,6 @@ public class Player {
 						y--;
 					}
 					enemyAttack(x, y);
-					currentDirection = "front";
 					setFacing("front", false);
 					return true;
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_A) {
@@ -133,7 +131,6 @@ public class Player {
 						x--;
 					}
 					enemyAttack(x, y);
-					currentDirection = "left";
 					setFacing("left", false);
 					return true;
 				}

@@ -80,14 +80,6 @@ public class ContentGenerator{
 			lists.get(pickLayer(levels)).add(new Torch("left"));
 		}
 		
-		// Chests and Keys
-		quantity = ThreadLocalRandom.current().nextInt(10, 21);
-		bonus    = ThreadLocalRandom.current().nextInt(0, 3);
-		for (int i = 0; i < quantity; i++) {
-			lists.get(pickLayer(levels-bonus)+bonus).add(new Chest(i));
-			lists.get(pickLayer(levels-1)+1).add(new Key(i));
-		}
-		
 		// Money
 		quantity = ThreadLocalRandom.current().nextInt(levels/4, levels/2);
 		for (int i = 0; i < quantity; i++) {
@@ -98,6 +90,14 @@ public class ContentGenerator{
 		quantity = ThreadLocalRandom.current().nextInt(1, 2);
 		for (int i = 0; i < quantity; i++) {
 			lists.get(19).add(new Onion());
+		}
+		
+		// Chests and Keys
+		quantity = ThreadLocalRandom.current().nextInt(10, 21);
+		bonus    = ThreadLocalRandom.current().nextInt(0, 3);
+		for (int i = 0; i < quantity; i++) {
+			lists.get(pickLayer(levels-bonus)+bonus).add(new Chest(i));
+			lists.get(pickLayer(levels-1)+1).add(new Key(i));
 		}
 	}
 	

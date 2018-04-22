@@ -32,6 +32,7 @@ public class SideMenu {
 	}
 
 	public void draw(Player player, int layer) throws IOException, SlickException {
+		health = player.getHealth();
 		GL11.glColor3f(1, 1, 1);
 		bg = new Image("res/Layer" + layer + "/Side.png");
 		bg.bind();
@@ -54,40 +55,15 @@ public class SideMenu {
 				GL11.glEnd();
 			}
 		}
-
-		heart.bind();
-
-		for (int i = 0; i < 3; i++) {
-			if (i < player.getHealth()) {
-				heart.bind();
-			} else {
-				heartEmpty.bind();
-			}
-			GL11.glBegin(GL11.GL_QUADS);
-
-			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i,
-					height / 2 - TILESIZEHEIGHT);
-			GL11.glTexCoord2f(0, 0);
-
-			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i,
-					height / 2 - TILESIZEHEIGHT + TILESIZEHEIGHT);
-			GL11.glTexCoord2f(1, 0);
-
-			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i + TILESIZEWIDTH,
-					height / 2 - TILESIZEHEIGHT + TILESIZEHEIGHT);
-			GL11.glTexCoord2f(1, 1);
-
-			GL11.glVertex2f((height / 2 - TILESIZEWIDTH * 2 - TILESIZEWIDTH / 3) + TILESIZEWIDTH * i + TILESIZEWIDTH,
-					height / 2 - TILESIZEHEIGHT);
-			GL11.glTexCoord2f(0, 1);
-
-			GL11.glEnd();
-		}
 		
 		drawInventory(player);
 	}
 	
 	private void drawInventory(Player player){
+		heart.bind();
+
+		drawHP();
+		
 		int keys = 0;
 		int coins = 0;
 		int shrek = 0;
@@ -174,6 +150,83 @@ public class SideMenu {
 				GL11.glTexCoord2f(1, 1);
 		
 				GL11.glVertex2f(minX + (i*TILESIZEWIDTH)+(2*TILESIZEWIDTH)-30 + TILESIZEWIDTH, 300 - y * TILESIZEHEIGHT);
+				GL11.glTexCoord2f(0, 1);
+		
+				GL11.glEnd();
+				
+			}
+		} catch (SlickException e) {
+			System.out.println("Can't draw inventory!");
+			e.printStackTrace();
+		}
+	}
+	
+	private void drawHP() {
+		Image type;
+		int y = 440;
+		// drawLine is recieving:
+		//  - Key to extract the name and draw it;
+		//  - A string of the number (eg '12') to draw it in characters
+		//  - The Level that it's being drawn on.
+		try {
+			if (health >0)
+				type = new Image("res/SideMenu/Heart.png");
+			else
+				 type = new Image("res/SideMenu/EmptyHeart.png");
+			
+			type.bind();
+			GL11.glBegin(GL11.GL_QUADS);
+		
+			GL11.glVertex2f(minX, y  );
+			GL11.glTexCoord2f(0, 0);
+		
+			GL11.glVertex2f(minX, y + TILESIZEHEIGHT);
+			GL11.glTexCoord2f(1, 0);
+		
+			GL11.glVertex2f(minX + TILESIZEWIDTH, y + TILESIZEHEIGHT);
+			GL11.glTexCoord2f(1, 1);
+		
+			GL11.glVertex2f(minX + TILESIZEWIDTH, y );
+			GL11.glTexCoord2f(0, 1);
+		
+			GL11.glEnd();
+			
+			Image colon = new Image("res/SideMenu/Colon.png");
+			colon.bind();
+			GL11.glBegin(GL11.GL_QUADS);
+		
+			GL11.glVertex2f(minX + (TILESIZEWIDTH), y);
+			GL11.glTexCoord2f(0, 0);
+		
+			GL11.glVertex2f(minX + (TILESIZEWIDTH), y + TILESIZEHEIGHT);
+			GL11.glTexCoord2f(1, 0);
+		
+			GL11.glVertex2f(minX + (TILESIZEWIDTH) + TILESIZEWIDTH, y + TILESIZEHEIGHT);
+			GL11.glTexCoord2f(1, 1);
+		
+			GL11.glVertex2f(minX + (TILESIZEWIDTH) + TILESIZEWIDTH, y);
+			GL11.glTexCoord2f(0, 1);
+		
+			GL11.glEnd();
+			
+			Image num;
+			String number = Integer.toString(health);
+			for (int i = 0; i < number.length(); i++){
+			    char c = number.charAt(i);        
+			    num = new Image("res/SideMenu/"+c+".png");
+				num.bind();
+				GL11.glBegin(GL11.GL_QUADS);
+		
+				GL11.glVertex2f(minX + (i*TILESIZEWIDTH)+(2*TILESIZEWIDTH)-30, y);
+				GL11.glTexCoord2f(0, 0);
+		
+				GL11.glVertex2f(minX + (i*TILESIZEWIDTH)+(2*TILESIZEWIDTH)-30, y  + TILESIZEHEIGHT);
+				GL11.glTexCoord2f(1, 0);
+		
+				GL11.glVertex2f(minX + (i*TILESIZEWIDTH)+(2*TILESIZEWIDTH)-30 + TILESIZEWIDTH, y + TILESIZEHEIGHT);
+				GL11.glTexCoord2f(1, 1);
+		
+				GL11.glVertex2f(minX + (i*TILESIZEWIDTH)+(2*TILESIZEWIDTH)-30 + TILESIZEWIDTH, y );
 				GL11.glTexCoord2f(0, 1);
 		
 				GL11.glEnd();

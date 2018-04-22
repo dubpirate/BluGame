@@ -1,6 +1,5 @@
 package Main;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.lwjgl.opengl.GL11;
@@ -11,28 +10,35 @@ import Aesthetic.Rock;
 import Interactable.Chest;
 import Items.Item;
 
-import java.lang.*;
-
 public class Enemy {
-	private Player player;
-	private Layer currentLayer;
+	Image img;
 	private int x;
 	private int y;
 	private int tileWidth;
 	private int tileHeight;
-	private boolean dead = false;
-	Image img;
+	private Player player;
+	private Layer currentLayer;
 	private boolean canLeft;
 	private boolean canRight;
 	private boolean canTop;
 	private boolean canBottom;
+	private boolean dead = false;
 
 	public Enemy( Player player, Layer currentLayer, int tileWidth, int tileHeight) throws SlickException {
 		this.player = player;
 		this.currentLayer = currentLayer;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
-		setPosition();
+		boolean flag = false;
+		do{
+			flag = true;
+			setPosition();
+			for (Enemy e: player.getEnemyList()) {
+				if (e.getX()==x && e.getY()==y && e.getLayer().getLevel()==currentLayer.getLevel() && !e.equals(this)) {
+					flag = false;
+				}
+			}
+		} while(!flag);
 		img = new Image("res/Sprites/ShadowFront.png");
 		draw();
 
@@ -51,20 +57,21 @@ public class Enemy {
 						flag = false;
 					}
 				}
-				if (currentLayer.getLevel()>1) {
-					int[] stairsDownCoords = currentLayer.getStairsDown().getCoords();
-					if (stairsDownCoords[0]/tileWidth==x && stairsDownCoords[1]/tileHeight==y) {
-						flag = false;
-					}
-				}
-				if (currentLayer.getLevel()<20) {
-					int[] stairsUpCoords = currentLayer.getStairsUp().getCoords();
-					if (stairsUpCoords[0]/tileWidth==x && stairsUpCoords[1]/tileHeight==y) {
-						flag = false;
-					}
+			}
+			if (currentLayer.getLevel() > 1) {
+				int[] stairsDownCoords = currentLayer.getStairsDown().getCoords();
+				if (stairsDownCoords[0] / tileWidth == x && stairsDownCoords[1] / tileHeight == y) {
+					flag = false;
 				}
 			}
-		}
+			if (currentLayer.getLevel() < 20) {
+				int[] stairsUpCoords = currentLayer.getStairsUp().getCoords();
+				if (stairsUpCoords[0] / tileWidth == x && stairsUpCoords[1] / tileHeight == y) {
+					flag = false;
+				}
+			}
+			
+			}
 	}
 	
 	public void setDead() throws SlickException {
@@ -104,20 +111,20 @@ public class Enemy {
 			int dy = y - player.getY();
 			checkSurroundings();
 			if (dx==1 && dy==0) {
-				img = new Image("res/Sprites/ShadowLeft.png");
 				hug();
+				setFacing("Left", true);
 				return;
 			}else if (dx==-1 && dy==0) {
-				img = new Image("res/Sprites/ShadowRight.png");
 				hug();
+				setFacing("Right", true);
 				return;
 			}else if (dy==-1 && dx==0) {
-				img = new Image("res/Sprites/ShadowBack.png");
 				hug();
+				setFacing("Back", true);
 				return;
 			}else if (dy==1 && dx==0) {
-				img = new Image("res/Sprites/ShadowFront.png");
 				hug();
+				setFacing("Front", true);
 				return;
 			}
 			int max = dx;
@@ -130,31 +137,44 @@ public class Enemy {
 					if (canTop) {
 						y++;
 					}
-					img = new Image("res/Sprites/ShadowBack.png");
+					setFacing("Back", false);
 				} else {
 					if (canBottom) {
 						y--;
 					}
-					img = new Image("res/Sprites/ShadowFront.png");
+					setFacing("Front", false);
 				}
 			} else if (max == dx) {
 				if (dx < 0) {
 					if (canRight) {
 						x++;
 					}
-					img = new Image("res/Sprites/ShadowRight.png");
+					setFacing("Right", false);
 				} else {
 					if (canLeft) {
 						x--;
 					}
-					img = new Image("res/Sprites/ShadowLeft.png");
+					setFacing("Left", false);
 				}
 			}
 		}
 	}
 	
 	public void hug() {
-		player.setHealth(-1);
+		player.hugged();
+	}
+	
+	private void setFacing(String direction, Boolean attacking) {
+		try {
+			if (attacking){
+				img = new Image("res/Sprites/ShadowAttack"+direction+".png");
+			} else {
+				img = new Image("res/Sprites/Shadow"+direction+".png");
+			}
+		} catch (SlickException e) {
+			System.out.println("Can't setFacing!");
+			e.printStackTrace();
+		}
 	}
 	
 	public void checkSurroundings() {

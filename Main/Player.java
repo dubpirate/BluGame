@@ -12,6 +12,7 @@ import Interactable.Chest;
 import Interactable.Coin;
 import Interactable.Key;
 import Interactable.Onion;
+import Interactable.Trap;
 import Items.Item;
 
 import java.io.IOException;
@@ -125,6 +126,7 @@ public class Player {
 					}
 					enemyAttack(x, y);
 					setFacing("back", false);
+					trapCheck();
 					return true;
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_D) {
 					if (x < 9 && !currentLayer.checkPlayerCollision((x + 1) * tileWidth, (y * tileHeight))) {
@@ -133,6 +135,7 @@ public class Player {
 					}
 					enemyAttack(x, y);
 					setFacing("right", false);
+					trapCheck();
 					return true;
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_S) {
 					if (y > 1 && !currentLayer.checkPlayerCollision((x * tileWidth), (y - 1) * tileHeight)) {
@@ -140,6 +143,7 @@ public class Player {
 					}
 					enemyAttack(x, y);
 					setFacing("front", false);
+					trapCheck();
 					return true;
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_A) {
 					if (x > 1 && !currentLayer.checkPlayerCollision((x - 1) * tileWidth, (y * tileHeight))) {
@@ -147,12 +151,26 @@ public class Player {
 					}
 					enemyAttack(x, y);
 					setFacing("left", false);
+					trapCheck();
 					return true;
 				}
 			}
 
 		}
 		return false;
+	}
+	
+	private void trapCheck() {
+		for (Item i : currentLayer.getContents()){
+			if (i instanceof Trap) {
+				if (i.getCoords()[0] == x*tileWidth && i.getCoords()[1] == y*tileHeight){
+					if (!((Trap) i).getTripped()){
+						hugged();
+						((Trap) i).trip();
+					}
+				}
+			}
+		}
 	}
 
 	public void enemyAttack(int x, int y) throws SlickException {
@@ -196,7 +214,7 @@ public class Player {
 								break;
 							}
 						}
-					}
+					} 		
 				} else {
 					inventory.add(i);
 					if (i instanceof Onion) {

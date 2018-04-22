@@ -20,11 +20,12 @@ public class Player {
 	private int y;
 	private int tileWidth;
 	private int tileHeight;
+	private int health = 3;
+	private String currentDirection = "front";
 	private Image img;
 	private Layer currentLayer;
 	private ArrayList<Item> inventory = new ArrayList<Item>();
 	private ArrayList<Enemy> enemyList;
-	private int health = 3;
 	private boolean dead = false;
 	private boolean hasOnion = false;
 
@@ -80,42 +81,60 @@ public class Player {
 
 		GL11.glEnd();
 	}
+	
+	private void setFacing(String direction, Boolean bloody) {
+		try {
+			if (bloody){
+				img = new Image("res/Sprites/Hit"+direction+".png");
+			} else {
+				img = new Image("res/Sprites/Man2"+direction+".png");
+			}
+		} catch (SlickException e) {
+			System.out.println("Can't setFacing!");
+			e.printStackTrace();
+		}
+	}
 
 	public boolean move() throws SlickException {
 		if (dead) {
 			img = new Image("res/Sprites/Man2Dead.png");
 			return false;
 		}
+		
 		while (Keyboard.next()) {
 			if (Keyboard.getEventKeyState()) {
 				if (Keyboard.getEventKey() == Keyboard.KEY_W) {
 					if (y < 9 && !currentLayer.checkPlayerCollision(x * tileWidth, (y + 1) * tileHeight)) {
 						y++;
 					}
-					img = new Image("res/Sprites/Man2Back.png");
 					enemyAttack(x, y);
+					currentDirection = "back";
+					setFacing("back", false);
 					return true;
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_D) {
 					if (x < 9 && !currentLayer.checkPlayerCollision((x + 1) * tileWidth, (y * tileHeight))) {
 						x++;
 
 					}
-					img = new Image("res/Sprites/Man2Right.png");
 					enemyAttack(x, y);
+					currentDirection = "right";
+					setFacing("right", false);
 					return true;
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_S) {
 					if (y > 1 && !currentLayer.checkPlayerCollision((x * tileWidth), (y - 1) * tileHeight)) {
 						y--;
 					}
-					img = new Image("res/Sprites/Man2Front.png");
 					enemyAttack(x, y);
+					currentDirection = "front";
+					setFacing("front", false);
 					return true;
 				} else if (Keyboard.getEventKey() == Keyboard.KEY_A) {
 					if (x > 1 && !currentLayer.checkPlayerCollision((x - 1) * tileWidth, (y * tileHeight))) {
 						x--;
 					}
-					img = new Image("res/Sprites/Man2Left.png");
 					enemyAttack(x, y);
+					currentDirection = "left";
+					setFacing("left", false);
 					return true;
 				}
 			}
@@ -131,6 +150,11 @@ public class Player {
 			}
 		}
 
+	}
+	
+	public void hugged(){
+		setHealth(-1);
+		setFacing(currentDirection, true);
 	}
 
 	public void checkForInteractable() throws SlickException {

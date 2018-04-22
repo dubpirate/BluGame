@@ -11,8 +11,6 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.opengl.Texture;
 
-import Aesthetic.Rock;
-
 public class Game {
 
 	private static final int TILESIZEHEIGHT = 48;

@@ -156,7 +156,7 @@ public class Enemy {
 	}
 	
 	public void hug() {
-		player.setHealth(-1);
+		player.hugged();
 	}
 	
 	public void checkSurroundings() {

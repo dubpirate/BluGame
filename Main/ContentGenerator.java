@@ -29,10 +29,10 @@ public class ContentGenerator{
 		}
 		
 		// Traps (no homo)
-		quantity = ThreadLocalRandom.current().nextInt(1, 3);
+		quantity = ThreadLocalRandom.current().nextInt(1, 8);
 		for (int i = 0; i < quantity; i++) {
 			do {
-				l = pickLayer(levels-(levels-4));
+				l = pickLayer((levels-4)+4);
 			} while(l >= 15);
 			lists.get(l).add(new Trap());
 		}
